@@ -1,195 +1,752 @@
 <!DOCTYPE html>
-<html lang="ro">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ViralBoost — Infiltrate the Global Algorithm</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet" />
     <style>
-        :root { --p: #8a2be2; --g: rgba(138,43,226,0.3); }
-        body, html { margin:0; padding:0; background:#000; color:#fff; font-family:'Inter',sans-serif; overflow-x:hidden; }
-        #p1 { height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; position:relative; background:radial-gradient(circle at center, #111, #000); }
-        .glow { position:fixed; width:600px; height:600px; background:radial-gradient(circle, var(--g) 0%, transparent 70%); pointer-events:none; z-index:1; transform:translate(-50%,-50%); }
-        .hero { font-size:12vw; font-weight:900; text-align:center; z-index:2; line-height:0.8; letter-spacing:-0.05em; }
-        .char { display:inline-block; opacity:0; filter:blur(15px); transform:translateY(50px); transition: 1s cubic-bezier(0.19,1,0.22,1); }
-        .char.active { opacity:1; filter:blur(0); transform:translateY(0); }
-        .lang-btn { position:fixed; top:20px; right:20px; border:1px solid var(--p); background:none; color:#fff; padding:10px; cursor:pointer; z-index:10; font-family:monospace; }
+        :root {
+            --accent: #00ff41; /* Matrix/Neural Green */
+            --bg: #050505;
+            --text: #ffffff;
+            --muted: rgba(255, 255, 255, 0.5);
+            --font-main: 'Inter', sans-serif;
+            --font-heading: 'Space+Grotesk', sans-serif;
+            --chroma-1: #0a0a0a;
+            --chroma-2: #001a05;
+            --chroma-3: #050505;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: var(--font-main);
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- CHROMA BACKGROUND ANIMATION --- */
+        .chroma-bg {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background: linear-gradient(125deg, var(--chroma-1), var(--chroma-2), var(--chroma-3));
+            background-size: 400% 400%;
+            animation: chromaShift 15s ease infinite;
+        }
+
+        @keyframes chromaShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* --- NAVIGATION --- */
+        .nav {
+            position: fixed;
+            top: 0; width: 100%;
+            padding: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-family: var(--font-heading);
+            font-weight: 900;
+            font-size: 1.2rem;
+            letter-spacing: -0.05em;
+            text-transform: uppercase;
+        }
+
+        .logo span { color: var(--accent); }
+
+        .lang-toggle {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 8px 16px;
+            border-radius: 100px;
+            color: var(--text);
+            font-size: 0.7rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+            backdrop-filter: blur(10px);
+        }
+
+        .lang-toggle:hover {
+            border-color: var(--accent);
+            background: rgba(0, 255, 65, 0.1);
+        }
+
+        /* --- SCROLL SYSTEM --- */
+        .viewport {
+            height: 100vh;
+            width: 100%;
+            position: relative;
+        }
+
+        .section {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 0 10%;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.8s cubic-bezier(0.45, 0, 0.55, 1);
+        }
+
+        .section.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        /* --- TYPOGRAPHY ANIMATIONS --- */
+        .reveal-text {
+            overflow: hidden;
+            display: block;
+        }
+
+        .reveal-text span {
+            display: block;
+            transform: translateY(110%);
+            transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .active .reveal-text span {
+            transform: translateY(0);
+        }
+
+        /* --- PAGE 1: THE REVEAL --- */
+        .hero-title {
+            font-family: var(--font-heading);
+            font-size: clamp(3rem, 10vw, 9rem);
+            font-weight: 900;
+            line-height: 0.9;
+            text-align: center;
+            letter-spacing: -0.06em;
+            margin-bottom: 40px;
+        }
+
+        .hero-title em {
+            font-style: normal;
+            -webkit-text-stroke: 1px var(--accent);
+            color: transparent;
+        }
+
+        .hero-sub {
+            font-size: clamp(1rem, 2vw, 1.5rem);
+            color: var(--muted);
+            max-width: 700px;
+            text-align: center;
+            line-height: 1.4;
+            font-weight: 300;
+        }
+
+        .hero-sub strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            opacity: 0.5;
+        }
+
+        .mouse {
+            width: 20px;
+            height: 35px;
+            border: 2px solid var(--text);
+            border-radius: 20px;
+            position: relative;
+        }
+
+        .mouse::after {
+            content: '';
+            width: 4px;
+            height: 8px;
+            background: var(--accent);
+            position: absolute;
+            top: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 2px;
+            animation: scrollWheel 2s infinite;
+        }
+
+        @keyframes scrollWheel {
+            0% { opacity: 1; transform: translate(-50%, 0); }
+            100% { opacity: 0; transform: translate(-50%, 15px); }
+        }
+
+        .d1 { transition-delay: 0.1s !important; }
+        .d2 { transition-delay: 0.2s !important; }
+        .d3 { transition-delay: 0.3s !important; }
+
+        /* --- HUD ELEMENTS --- */
+        .hud-line {
+            position: fixed;
+            background: var(--accent);
+            opacity: 0.2;
+            z-index: 500;
+        }
+        .hud-v { width: 1px; top: 0; bottom: 0; }
+        .hud-h { height: 1px; left: 0; right: 0; }
     </style>
 </head>
 <body>
-    <div class="glow" id="cursor"></div>
-    <button class="lang-btn" onclick="toggle()">EN</button>
 
-    <section id="p1">
-        <h1 class="hero" id="title">TREZEȘTE-TE</h1>
-        <p style="color:var(--p); font-family:monospace; margin-top:20px; letter-spacing:5px;">200.VIEWS.IS.A.CHOICE</p>
-    </section>
+    <div class="chroma-bg"></div>
 
-    <script>
-        const dict = { ro: "TREZEȘTE-TE", en: "WAKE UP" };
-        let L = "ro";
-        const T = document.getElementById('title');
+    <!-- HUD Grid for "Neural" feel -->
+    <div class="hud-line hud-v" style="left: 5%;"></div>
+    <div class="hud-line hud-v" style="right: 5%;"></div>
+    <div class="hud-line hud-h" style="top: 10%;"></div>
 
-        function split() {
-            T.innerHTML = T.innerText.split('').map(c => `<span class="char">${c === ' ' ? '&nbsp;' : c}</span>`).join('');
-            setTimeout(() => document.querySelectorAll('.char').forEach((s,i) => setTimeout(() => s.classList.add('active'), i*50)), 100);
-        }
+    <nav class="nav">
+        <div class="logo">Viral<span>Boost</span></div>
+        <button class="lang-toggle" id="langBtn">EN / RO</button>
+    </nav>
 
-        function toggle() {
-            L = L === "ro" ? "en" : "ro";
-            T.innerText = dict[L];
-            document.querySelector('.lang-btn').innerText = L === "ro" ? "EN" : "RO";
-            split();
-        }
-
-        document.onmousemove = e => {
-            const c = document.getElementById('cursor');
-            c.style.left = e.clientX + 'px';
-            c.style.top = e.clientY + 'px';
-        }
-
-        window.onload = split;
-    </script>
-<!-- INJECTEAZĂ HTML 2 AICI -->
-    <!-- SECTION 2: THE COST OF SILENCE -->
-    <section id="p2" style="height:100vh; scroll-snap-align:start; display:flex; flex-direction:column; align-items:center; justify-content:center; background:#050505; border-top:1px solid #111; padding:0 10%;">
-        <div class="sub-meta" style="margin-bottom:20px; opacity:0.5;">002 // MARKET_VALUE</div>
-        <h2 class="hero" style="font-size:6vw; margin-bottom:50px;">THE COST.</h2>
-
-        <div style="width:100%; max-width:900px; border:1px solid #222; background:rgba(255,255,255,0.02); backdrop-filter:blur(10px);">
-            <table style="width:100%; border-collapse:collapse; font-family:monospace; font-size:0.9rem;">
-                <tr style="border-bottom:1px solid #222;">
-                    <th style="padding:25px; text-align:left; color:#444;">VARIABLE</th>
-                    <th style="padding:25px; text-align:center; color:#444;">TRADITIONAL</th>
-                    <th style="padding:25px; text-align:center; color:var(--p);">VIRALBOOST</th>
-                </tr>
-                <tr style="border-bottom:1px solid #222;">
-                    <td style="padding:25px;">DISTRIBUTION</td>
-                    <td style="padding:25px; text-align:center; opacity:0.5;">LOCAL</td>
-                    <td style="padding:25px; text-align:center; font-weight:900;">GLOBAL (15+)</td>
-                </tr>
-                <tr style="border-bottom:1px solid #222;">
-                    <td style="padding:25px;">REACH CAP</td>
-                    <td style="padding:25px; text-align:center; opacity:0.5;">LOW</td>
-                    <td style="padding:25px; text-align:center; font-weight:900;">UNCAPPED</td>
-                </tr>
-                <tr>
-                    <td style="padding:25px; color:var(--p);">ENTRY FEE</td>
-                    <td style="padding:25px; text-align:center; opacity:0.5;">$2,000+</td>
-                    <td style="padding:25px; text-align:center; font-weight:900; background:var(--p); color:#fff;">$0 (BETA)</td>
-                </tr>
-            </table>
-        </div>
-
-        <p style="margin-top:40px; font-family:monospace; font-size:0.7rem; color:#444; text-transform:uppercase; letter-spacing:2px;">
-            *Access is restricted to verified creators during alpha phase.
-        </p>
-    </section>
-
-    <style>
-        /* CSS adițional pentru fuziune */
-        #p2 table tr:hover { background: rgba(138,43,226,0.05); transition: 0.3s; }
-        @media (max-width: 768px) {
-            .hero { font-size: 15vw !important; }
-            table { font-size: 0.6rem !important; }
-        }
-    </style>
-<!-- INJECTEAZĂ HTML 3 AICI (ACCESS GATE) --><!-- SECTION 3: THE ACCESS GATEWAY -->
-    <section id="p3" style="height:100vh; scroll-snap-align:start; display:flex; flex-direction:column; align-items:center; justify-content:center; position:relative; background:#000; border-top:1px solid #111;">
-        <div class="corner-bracket top-left" style="position:absolute; top:40px; left:40px; width:100px; height:100px; border-left:1px solid var(--p); border-top:1px solid var(--p); opacity:0.3;"></div>
-        <div class="corner-bracket bottom-right" style="position:absolute; bottom:40px; right:40px; width:100px; height:100px; border-right:1px solid var(--p); border-bottom:1px solid var(--p); opacity:0.3;"></div>
-
-        <div id="form-container" style="width:100%; max-width:600px; text-align:center; z-index:5;">
-            <h1 class="hero" id="final-title" style="font-size:8vw; margin-bottom:20px;">ASCEND.</h1>
-            <p class="sub-meta" id="final-sub" style="margin-bottom:60px;">IDENTITY_VALIDATION_REQUIRED</p>
-
-            <div class="input-group" style="position:relative; width:100%;">
-                <input type="email" id="email-field" placeholder="USER_EMAIL@DOMAIN.COM" 
-                       style="width:100%; background:rgba(138,43,226,0.05); border:1px solid #222; border-bottom:2px solid var(--p); padding:25px; color:#fff; font-family:monospace; font-size:1.2rem; outline:none; text-align:center; transition:0.4s;">
-                <button id="exec-btn" onclick="processAccess()" 
-                        style="width:100%; margin-top:30px; padding:25px; background:#fff; color:#000; border:none; font-weight:900; font-size:1.1rem; letter-spacing:10px; cursor:pointer; transition:0.4s; text-transform:uppercase;">
-                    EXECUTE_START
-                </button>
+    <div class="viewport" id="viewport">
+        
+        <!-- PAGE 1: THE COLD REVEAL -->
+        <section class="section active" id="sec0">
+            <h1 class="hero-title">
+                <span class="reveal-text"><span class="d1" data-i18n="h1_line1">200 views is</span></span>
+                <span class="reveal-text"><span class="d2" data-i18n="h1_line2">a <em>choice.</em></span></span>
+            </h1>
+            <p class="hero-sub reveal-text">
+                <span class="d3" data-i18n="h1_sub">
+                    Stop pleading with the local algorithm. <strong>ViralBoost</strong> infiltrates global feeds using Neural Dubbing and real-time retention engineering.
+                </span>
+            </p>
+            
+            <div class="scroll-indicator">
+                <div class="mouse"></div>
+                <span style="font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase;" data-i18n="scroll_msg">Initiate Sequence</span>
             </div>
-            <p id="status-msg" style="margin-top:20px; font-family:monospace; font-size:0.7rem; color:#444; min-height:1em;"></p>
-        </div>
+        </section>
 
-        <div id="success-gate" style="display:none; text-align:center; z-index:5;">
-            <h1 class="hero" style="color:var(--p);">SYNCED.</h1>
-            <p class="sub-meta">NEURAL_LINK_ESTABLISHED // CHECK_INBOX</p>
-        </div>
+        <!-- PAGE 2 & 3 will be injected here -->
 
-        <footer style="position:absolute; bottom:20px; font-family:monospace; font-size:0.6rem; color:#222; letter-spacing:2px;">
-            VIRALBOOST_CORE_V.3.0 // ALL_RIGHTS_RESERVED_2026
-        </footer>
-    </section>
+    </div>
 
     <script>
-        // TRADUCERI PAGINA 3
-        const dict3 = {
-            ro: { title: "ASCENSIUNE.", sub: "VALIDARE_IDENTITATE_NECESARĂ", btn: "EXECUTĂ_START", success: "SINCRONIZAT." },
-            en: { title: "ASCEND.", sub: "IDENTITY_VALIDATION_REQUIRED", btn: "EXECUTE_START", success: "SYNCED." }
+        const TRANSLATIONS = {
+            en: {
+                h1_line1: "200 views is",
+                h1_line2: "a choice.",
+                h1_sub: "Stop pleading with the local algorithm. ViralBoost infiltrates global feeds using Neural Dubbing and real-time retention engineering.",
+                scroll_msg: "Initiate Sequence",
+                next: "Next",
+                waitlist_title: "Enter the Network",
+                waitlist_sub: "Neural Engine 2026 is currently in private beta. Reserve your slot to break the barrier."
+            },
+            ro: {
+                h1_line1: "200 de vizualizări",
+                h1_line2: "este o alegere.",
+                h1_sub: "Nu te mai ruga de algoritmul local. ViralBoost îți infiltrează conținutul global prin Neural Dubbing și inginerie de retenție.",
+                scroll_msg: "Inițiază Secvența",
+                next: "Mai departe",
+                waitlist_title: "Intră în Rețea",
+                waitlist_sub: "Neural Engine 2026 este în beta privat. Rezervă-ți locul pentru a distruge barierele."
+            }
         };
 
-        // EXTINDERE FUNCȚIE TOGGLE DIN PAGINA 1
-        const originalToggle = toggle;
-        toggle = function() {
-            originalToggle();
-            const data = dict3[L];
-            document.getElementById('final-title').innerText = data.title;
-            document.getElementById('final-sub').innerText = data.sub;
-            document.getElementById('exec-btn').innerText = data.btn;
-        };
+        let currentLang = 'en';
+        const langBtn = document.getElementById('langBtn');
 
-        // LOGICA DE SUBMISSION (SUPABASE)
-        async function processAccess() {
-            const email = document.getElementById('email-field').value;
-            const btn = document.getElementById('exec-btn');
-            const msg = document.getElementById('status-msg');
-
-            if(!email.includes('@')) {
-                msg.innerText = ">> ERR: INVALID_IDENTITY_FORMAT";
-                msg.style.color = "#ff3b30";
-                return;
-            }
-
-            btn.disabled = true;
-            btn.innerText = "UPLINKING...";
-            msg.innerText = ">> ESTABLISHING_SECURE_CONNECTION...";
-
-            try {
-                const res = await fetch('https://uutxxjvwlnjviwqzazmy.supabase.co/rest/v1/waitlist', {
-                    method: 'POST',
-                    headers: {
-                        'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1dHh4anZ3bG5qdml3cXphem15Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNDU1NDUsImV4cCI6MjA5MTkyMTU0NX0.7bM2pQaO1ZCItvTIVyzKOHnZlUXrvdsK6Gpo96anaXc',
-                        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1dHh4anZ3bG5qdml3cXphem15Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNDU1NDUsImV4cCI6MjA5MTkyMTU0NX0.7bM2pQaO1ZCItvTIVyzKOHnZlUXrvdsK6Gpo96anaXc',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ email: email })
-                });
-
-                if(res.ok) {
-                    document.getElementById('form-container').style.display = 'none';
-                    document.getElementById('success-gate').style.display = 'block';
-                } else {
-                    throw new Error();
-                }
-            } catch (e) {
-                btn.disabled = false;
-                btn.innerText = "RETRY_EXECUTION";
-                msg.innerText = ">> ERR: CONNECTION_REFUSED_BY_HOST";
-            }
+        function updateLang() {
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                el.innerHTML = TRANSLATIONS[currentLang][key];
+            });
         }
 
-        // SMOOTH SCROLL & REVEAL ON SCROLL
-        const sections = document.querySelectorAll('section');
-        const options = { threshold: 0.5 };
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if(entry.isIntersecting) {
-                    if(entry.target.id === 'p1') split();
-                    console.log(`ACTIVE_SECTOR: ${entry.target.id.toUpperCase()}`);
-                }
-            });
-        }, options);
-        sections.forEach(s => observer.observe(s));
+        langBtn.addEventListener('click', () => {
+            currentLang = currentLang === 'en' ? 'ro' : 'en';
+            updateLang();
+        });
+
+        // --- SCROLL ENGINE ---
+        let currentSection = 0;
+        const sections = document.querySelectorAll('.section');
+        let isTransitioning = false;
+
+        function scrollToSection(index) {
+            if (index < 0 || index >= sections.length || isTransitioning) return;
+            isTransitioning = true;
+            
+            sections[currentSection].classList.remove('active');
+            
+            setTimeout(() => {
+                currentSection = index;
+                sections[currentSection].classList.add('active');
+                isTransitioning = false;
+            }, 800);
+        }
+
+        window.addEventListener('wheel', (e) => {
+            if (e.deltaY > 50) scrollToSection(currentSection + 1);
+            else if (e.deltaY < -50) scrollToSection(currentSection - 1);
+        });
+
+        // Touch support
+        let touchStart = 0;
+        window.addEventListener('touchstart', e => touchStart = e.touches[0].clientY);
+        window.addEventListener('touchend', e => {
+            let touchEnd = e.changedTouches[0].clientY;
+            if (touchStart - touchEnd > 50) scrollToSection(currentSection + 1);
+            if (touchStart - touchEnd < -50) scrollToSection(currentSection - 1);
+        });
+
+        updateLang();
     </script>
+
+
 </body>
 </html>
+<!-- CONTINUARE DIN SECȚIUNEA ANTERIOARĂ (Injectează asta în interiorul div-ului .viewport) -->
+
+        <!-- PAGE 2: THE ECONOMIC BREACH -->
+        <section class="section" id="sec1">
+            <div class="p2-container">
+                <div class="p2-badge anim-p2 d1" data-i18n="p2_badge">⚡ ALGORITHM BYPASS ACTIVE</div>
+                
+                <h2 class="p2-price-line anim-p2 d2" id="priceDisplay">
+                    <span class="currency">€</span>0,00
+                </h2>
+
+                <div class="p2-label anim-p2 d3" data-i18n="p2_label">GLOBAL INFILTRATION PACK</div>
+                
+                <p class="p2-desc anim-p2 d4">
+                    <span data-i18n="p2_desc_1">Virality is no longer a lottery.</span><br>
+                    <strong data-i18n="p2_desc_2">Dominate global feeds for the price of 2 coffees.</strong>
+                </p>
+
+                <div class="p2-stats anim-p2 d5">
+                    <div class="stats-label">
+                        <span data-i18n="p2_nodes">Neural Nodes Occupied</span>
+                        <strong id="nodesCount">84%</strong>
+                    </div>
+                    <div class="stats-bar">
+                        <div class="stats-fill" id="barFill"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+<!-- CSS SUPLIMENTAR (Adaugă în <style>) -->
+<style>
+    .p2-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        max-width: 900px;
+    }
+
+    .p2-badge {
+        background: var(--accent);
+        color: #000;
+        padding: 6px 15px;
+        border-radius: 4px;
+        font-size: 0.7rem;
+        font-weight: 900;
+        letter-spacing: 0.1em;
+        margin-bottom: 20px;
+        box-shadow: 0 0 20px rgba(0, 255, 65, 0.4);
+    }
+
+    .p2-price-line {
+        font-family: var(--font-heading);
+        font-size: clamp(6rem, 20vw, 15rem);
+        font-weight: 900;
+        line-height: 0.8;
+        letter-spacing: -0.05em;
+        color: var(--text);
+        margin-bottom: 10px;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+    }
+
+    .p2-price-line .currency {
+        font-size: 0.3em;
+        margin-top: 20px;
+        color: var(--accent);
+    }
+
+    .p2-label {
+        font-size: 1.5rem;
+        font-weight: 700;
+        letter-spacing: 0.3em;
+        text-transform: uppercase;
+        margin-bottom: 30px;
+        color: var(--text);
+    }
+
+    .p2-desc {
+        font-size: 1.2rem;
+        color: var(--muted);
+        line-height: 1.6;
+        margin-bottom: 50px;
+    }
+
+    .p2-desc strong {
+        color: var(--accent);
+        text-shadow: 0 0 10px rgba(0, 255, 65, 0.2);
+    }
+
+    .p2-stats {
+        width: 100%;
+        max-width: 400px;
+    }
+
+    .stats-label {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.8rem;
+        margin-bottom: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+    }
+
+    .stats-bar {
+        height: 4px;
+        background: rgba(255,255,255,0.05);
+        border-radius: 2px;
+        overflow: hidden;
+    }
+
+    .stats-fill {
+        height: 100%;
+        width: 0%;
+        background: var(--accent);
+        box-shadow: 0 0 15px var(--accent);
+        transition: width 2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Animații specifice pentru P2 */
+    .anim-p2 {
+        opacity: 0;
+        transform: translateY(40px);
+        transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .section.active .anim-p2 {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /* Navigation Arrow */
+    .nav-arrow {
+        position: fixed;
+        bottom: 30px;
+        right: 40px;
+        width: 50px;
+        height: 50px;
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 1000;
+        transition: all 0.3s;
+        background: rgba(0,0,0,0.5);
+        backdrop-filter: blur(5px);
+    }
+
+    .nav-arrow:hover {
+        border-color: var(--accent);
+        transform: translateY(5px);
+    }
+
+    .nav-arrow svg {
+        width: 20px;
+        stroke: var(--accent);
+    }
+</style>
+
+<!-- UPDATE SCRIPT (Înlocuiește/Adaugă în obiectul TRANSLATIONS și logică) -->
+<script>
+    // Adaugă astea în TRANSLATIONS
+    // en: { ... p2_badge: "⚡ ALGORITHM BYPASS ACTIVE", p2_label: "GLOBAL INFILTRATION PACK", p2_desc_1: "Virality is no longer a lottery.", p2_desc_2: "Dominate global feeds for the price of 2 coffees.", p2_nodes: "Neural Nodes Occupied" }
+    // ro: { ... p2_badge: "⚡ BYPASS ALGORITMIC ACTIV", p2_label: "PACK INFILTRARE GLOBALĂ", p2_desc_1: "Viralitatea nu mai este o loterie.", p2_desc_2: "Domină fluxurile globale la prețul a 2 cafele.", p2_nodes: "Noduri Neurale Ocupate" }
+
+    // Funcția de animație preț
+    function animatePrice() {
+        const display = document.getElementById('priceDisplay');
+        const bar = document.getElementById('barFill');
+        let start = 0;
+        const end = 4.99;
+        const duration = 1500;
+        const startTime = performance.now();
+
+        function update(currentTime) {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            const ease = 1 - Math.pow(1 - progress, 4);
+            const currentVal = (start + (end - start) * ease).toFixed(2);
+            
+            display.innerHTML = `<span class="currency">€</span>${currentVal.replace('.', ',')}`;
+            
+            if (progress < 1) {
+                requestAnimationFrame(update);
+            }
+        }
+        
+        requestAnimationFrame(update);
+        bar.style.width = "84%";
+    }
+
+    // Modifică funcția scrollToSection existentă să includă trigger-ul:
+    const originalScrollTo = scrollToSection;
+    scrollToSection = function(index) {
+        if (index === 1) {
+            setTimeout(animatePrice, 500);
+        }
+        originalScrollTo(index);
+    };
+</script>
+
+<div class="nav-arrow" onclick="scrollToSection(currentSection + 1)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 13l5 5 5-5M7 6l5 5 5-5"/></svg>
+</div>
+
+<!-- INCOMPLETE: Aștept confirmarea pentru Pagina 3 (Waitlist/The Gateway) --><!-- PAGE 3: THE GATEWAY -->
+<section class="section" id="sec2">
+    <div class="p3-container">
+        <!-- Title with letter-by-letter animation -->
+        <h2 class="p3-title" id="p3Title">
+            <span class="word" data-i18n="p3_title_1">INITIATE</span>
+            <span class="word accent-text" data-i18n="p3_title_2">TAKEOVER</span>
+        </h2>
+        
+        <p class="p3-sub anim-p3 d1" data-i18n="p3_sub">
+            The global feed is waiting for a new apex predator. <br>
+            <strong>Enter your terminal address to secure your node.</strong>
+        </p>
+
+        <div class="form-wrapper anim-p3 d2">
+            <div class="input-group">
+                <input type="email" id="emailInput" placeholder="ACCESS_CODE@EMAIL.COM" autocomplete="off">
+                <div class="input-glow"></div>
+            </div>
+            
+            <button class="claim-btn" id="claimBtn">
+                <span class="btn-text" data-i18n="p3_btn">SECURE ACCESS 🎯</span>
+                <div class="btn-shimmer"></div>
+            </button>
+        </div>
+
+        <div class="status-msg" id="statusMsg"></div>
+
+        <!-- Success Terminal UI -->
+        <div class="success-terminal" id="successUI">
+            <div class="terminal-header">
+                <span class="dot-red"></span><span class="dot-amber"></span><span class="dot-green"></span>
+            </div>
+            <div class="terminal-body">
+                <p class="t-line">> IDENTITY_VERIFIED: TRUE</p>
+                <p class="t-line">> NODE_STATUS: RESERVED</p>
+                <p class="t-line">> ACCES_GRANTED: LEVEL_ALPHA</p>
+                <p class="t-line highlight" data-i18n="p3_success">Welcome to the Network. Check your transmission.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CSS PENTRU PAGINA 3 -->
+<style>
+    .p3-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        width: 100%;
+        max-width: 800px;
+    }
+
+    .p3-title {
+        font-family: var(--font-heading);
+        font-size: clamp(3rem, 8vw, 6rem);
+        font-weight: 900;
+        letter-spacing: -0.04em;
+        line-height: 1;
+        margin-bottom: 20px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+    }
+
+    .word { overflow: hidden; display: inline-block; }
+    .word span { display: inline-block; transform: translateY(110%); transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+    .section.active .word span { transform: translateY(0); }
+
+    .accent-text { color: var(--accent); text-shadow: 0 0 30px rgba(0, 255, 65, 0.3); }
+
+    .p3-sub {
+        font-size: 1.1rem;
+        color: var(--muted);
+        margin-bottom: 40px;
+        line-height: 1.6;
+    }
+
+    /* FORM STYLING */
+    .form-wrapper {
+        display: flex;
+        gap: 15px;
+        width: 100%;
+        max-width: 500px;
+        position: relative;
+    }
+
+    .input-group {
+        flex: 1;
+        position: relative;
+    }
+
+    #emailInput {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 20px 25px;
+        border-radius: 8px;
+        color: var(--text);
+        font-family: var(--font-main);
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        outline: none;
+        transition: all 0.3s;
+    }
+
+    #emailInput:focus {
+        border-color: var(--accent);
+        background: rgba(0, 255, 65, 0.05);
+    }
+
+    .claim-btn {
+        background: var(--accent);
+        color: #000;
+        border: none;
+        padding: 0 30px;
+        border-radius: 8px;
+        font-weight: 900;
+        font-size: 0.9rem;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.2s;
+    }
+
+    .claim-btn:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(0, 255, 65, 0.5); }
+
+    .btn-shimmer {
+        position: absolute;
+        top: 0; left: -100%;
+        width: 100%; height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+        animation: shimmer 3s infinite;
+    }
+
+    /* SUCCESS UI */
+    .success-terminal {
+        display: none;
+        margin-top: 40px;
+        width: 100%;
+        max-width: 450px;
+        background: #0a0a0a;
+        border: 1px solid var(--accent);
+        border-radius: 10px;
+        text-align: left;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    }
+
+    .terminal-header { padding: 10px; border-bottom: 1px solid rgba(0,255,65,0.2); display: flex; gap: 6px; }
+    .terminal-header span { width: 8px; height: 8px; border-radius: 50%; display: block; }
+    .dot-red { background: #ff5f56; } .dot-amber { background: #ffbd2e; } .dot-green { background: #27c93f; }
+    .terminal-body { padding: 20px; font-family: 'Courier New', Courier, monospace; font-size: 0.8rem; }
+    .t-line { margin-bottom: 8px; color: var(--accent); opacity: 0.8; }
+    .t-line.highlight { opacity: 1; font-weight: bold; margin-top: 15px; }
+
+    .anim-p3 { opacity: 0; transform: translateY(20px); transition: 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+    .section.active .anim-p3 { opacity: 1; transform: translateY(0); }
+</style>
+
+<!-- JS UPDATES -->
+<script>
+    // 1. Split letters for Page 3 Title
+    function prepareTitle() {
+        const titleElements = document.querySelectorAll('.word');
+        titleElements.forEach(el => {
+            const text = el.innerText;
+            el.innerHTML = '';
+            [...text].forEach((char, i) => {
+                const span = document.createElement('span');
+                span.innerText = char;
+                span.style.transitionDelay = `${i * 0.05}s`;
+                el.appendChild(span);
+            });
+        });
+    }
+
+    // 2. Add to TRANSLATIONS
+    Object.assign(TRANSLATIONS.en, {
+        p3_title_1: "INITIATE",
+        p3_title_2: "TAKEOVER",
+        p3_sub: "The global feed is waiting for a new apex predator. Enter your terminal address to secure your node.",
+        p3_btn: "SECURE ACCESS 🎯",
+        p3_success: "Welcome to the Network. Check your transmission."
+    });
+
+    Object.assign(TRANSLATIONS.ro, {
+        p3_title_1: "INIȚIAZĂ",
+        p3_title_2: "PRELUAREA",
+        p3_sub: "Fluxul global așteaptă un nou prădător suprem. Introdu adresa ta de terminal pentru a-ți securiza locul.",
+        p3_btn: "SECURIZARE ACCES 🎯",
+        p3_success: "Bun venit în Rețea. Verifică transmisiunea."
+    });
+
+    // 3. Form Logic
+    const claimBtn = document.getElementById('claimBtn');
+    const successUI = document.getElementById('successUI');
+    const formWrap = document.querySelector('.form-wrapper');
+    const p3Sub = document.querySelector('.p3-sub');
+
+    claimBtn.addEventListener('click', () => {
+        const email = document.getElementById('emailInput').value;
+        if (email.includes('@')) {
+            formWrap.style.display = 'none';
+            p3Sub.style.display = 'none';
+            successUI.style.display = 'block';
+            
+            // Terminal Typing Effect
+            document.querySelectorAll('.t-line').forEach((line, i) => {
+                line.style.opacity = '0';
+                setTimeout(() => { line.style.opacity = '1'; }, i * 400);
+            });
+        }
+    });
+
+    prepareTitle();
+</script>
