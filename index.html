@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bullseye — Don't just trade. Hunt.</title>
+  <title>ViralBoost — Break the 200-view jail.</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -11,21 +11,20 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --green: #00c853;
-      --green-glow: rgba(0,200,83,0.18);
-      --bg: #ffffff;
-      --text: #0a0a0a;
+      /* Culoare AI Vibrantă */
+      --accent: #8a2be2; 
+      --accent-glow: rgba(138, 43, 226, 0.25);
+      --bg: #050505; /* Black deeper */
+      --text: #f0f0f0;
       --muted: #888;
-      --border: rgba(0,0,0,0.08);
-      --font-d: -apple-system, BlinkMacSystemFont, 'DM Sans', 'Helvetica Neue', sans-serif;
-      --font-b: -apple-system, BlinkMacSystemFont, 'DM Sans', 'Helvetica Neue', sans-serif;
+      --border: rgba(255,255,255,0.1);
+      --font-d: 'DM Sans', -apple-system, sans-serif;
     }
 
-    html, body { width: 100%; height: 100%; overflow: hidden; }
+    html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bg); }
     body {
-      background: var(--bg);
       color: var(--text);
-      font-family: var(--font-b);
+      font-family: var(--font-d);
       -webkit-font-smoothing: antialiased;
     }
 
@@ -35,720 +34,300 @@
       position: absolute; inset: 0;
       display: flex; flex-direction: column;
       align-items: center; justify-content: center;
-      padding: 80px 24px 80px;
-      pointer-events: none;
-      opacity: 0;
+      padding: 80px 24px;
+      pointer-events: none; opacity: 0;
+      transition: opacity 0.5s ease;
     }
     .page.active { pointer-events: all; opacity: 1; }
 
     /* ── LOGO ── */
     .logo {
       position: fixed; top: 36px; left: 50%; transform: translateX(-50%);
-      font-family: var(--font-d);
-      font-size: 1rem; font-weight: 800;
-      letter-spacing: -0.01em;
-      color: var(--text);
+      font-size: 1.2rem; font-weight: 800;
+      letter-spacing: -0.02em; color: var(--text);
       z-index: 100;
-      transition: opacity 0.4s;
     }
-    .logo span { color: var(--green); }
+    .logo span { color: var(--accent); }
 
     /* ── LANG BUTTON ── */
     .lang-btn {
-      position: fixed; top: 24px; right: 24px;
-      z-index: 200;
-      display: flex; align-items: center; gap: 10px;
-      background: #fff;
-      border: 2px solid rgba(0,0,0,0.1);
-      border-radius: 100px;
-      padding: 10px 20px 10px 14px;
-      font-size: 0.95rem; font-weight: 700;
-      font-family: var(--font-b);
-      cursor: pointer;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-      transition: transform 0.15s, box-shadow 0.15s, border-color 0.2s;
-      letter-spacing: 0.04em;
-      color: var(--text);
-      user-select: none;
+      position: fixed; top: 24px; right: 24px; z-index: 200;
+      display: flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      border-radius: 100px; padding: 8px 16px;
+      color: var(--text); font-size: 0.8rem; font-weight: 700;
+      cursor: pointer; backdrop-filter: blur(10px);
     }
-    .lang-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.14);
-      border-color: var(--green);
-    }
-    .lang-btn:active { transform: translateY(0); }
-    .lang-btn .lang-flag { font-size: 1.75rem; line-height: 1; }
-    .lang-btn .lang-code { font-size: 0.9rem; font-weight: 800; letter-spacing: 0.08em; }
-
-    /* ── ARROW ── */
-    .arrow-btn {
-      position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%);
-      width: 48px; height: 48px;
-      border-radius: 50%;
-      border: 1.5px solid rgba(0,0,0,0.15);
-      background: transparent;
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer;
-      transition: border-color 0.2s, background 0.2s, transform 0.2s, opacity 0.4s;
-      z-index: 100;
-    }
-    .arrow-btn:hover { border-color: var(--green); background: rgba(0,200,83,0.06); transform: translateX(-50%) translateY(3px); }
-    .arrow-btn svg { width: 18px; height: 18px; stroke: var(--text); transition: stroke 0.2s; }
-    .arrow-btn:hover svg { stroke: var(--green); }
-    .arrow-btn.hidden { opacity: 0; pointer-events: none; }
 
     /* ── DOTS ── */
     .dots {
       position: fixed; right: 32px; top: 50%; transform: translateY(-50%);
-      display: flex; flex-direction: column; gap: 8px;
-      z-index: 100;
+      display: flex; flex-direction: column; gap: 10px; z-index: 100;
     }
     .dot {
-      width: 6px; height: 6px; border-radius: 50%;
-      background: rgba(0,0,0,0.15);
-      transition: background 0.3s, transform 0.3s;
-      cursor: pointer;
+      width: 8px; height: 8px; border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      transition: 0.3s; cursor: pointer;
     }
-    .dot.active { background: var(--green); transform: scale(1.4); }
+    .dot.active { background: var(--accent); transform: scale(1.5); box-shadow: 0 0 10px var(--accent); }
 
-    /* ════════════════════════════
-       PAGE 1 — HERO
-    ════════════════════════════ */
-    .p1-eyebrow {
-      font-size: 0.72rem; font-weight: 600;
-      letter-spacing: 0.18em; text-transform: uppercase;
-      color: var(--green); margin-bottom: 28px;
-    }
+    /* ── CONTENT STYLES ── */
     .p1-title {
-      font-family: var(--font-d);
-      font-size: clamp(4rem, 10vw, 8rem);
-      font-weight: 800;
-      line-height: 0.95;
+      font-size: clamp(2.5rem, 8vw, 5.5rem);
+      font-weight: 800; line-height: 1;
+      text-align: center; margin-bottom: 24px;
       letter-spacing: -0.04em;
-      text-align: center;
-      margin-bottom: 36px;
     }
-    .p1-title em { font-style: normal; color: var(--green); }
+    .p1-title em { font-style: normal; color: var(--accent); text-shadow: 0 0 30px var(--accent-glow); }
+
     .p1-sub {
-      font-size: clamp(1.05rem, 2vw, 1.3rem);
-      color: var(--muted);
-      text-align: center;
-      line-height: 1.7;
-      max-width: 520px;
-      font-weight: 400;
-    }
-    .p1-sub strong { color: var(--text); font-weight: 600; }
-    .pricing-clarity {
-      margin-top: 32px;
-      display: flex; flex-direction: column; gap: 10px;
-      width: 100%; max-width: 380px;
-    }
-    .pc-row {
-      display: flex; align-items: flex-start; gap: 12px;
-      border-radius: 14px; padding: 12px 16px;
-      text-align: left;
-    }
-    .pc-free  { background: rgba(0,200,83,0.08);  border: 1px solid rgba(0,200,83,0.25); }
-    .pc-shark { background: rgba(255,193,7,0.08); border: 1px solid rgba(255,193,7,0.3); }
-    .pc-wait  { background: rgba(255,255,255,0.04); border: 1px solid rgba(0,0,0,0.1); }
-    .pc-check {
-      font-size: 1rem; flex-shrink: 0; margin-top: 2px;
-    }
-    .pc-free  .pc-check { color: var(--green); }
-    .pc-shark .pc-check { color: #FFC107; }
-    .pc-wait  .pc-check { color: var(--muted); }
-    .pc-row strong { font-size: 0.88rem; font-weight: 700; color: var(--text); }
-    .pc-sub { font-size: 0.75rem; color: var(--muted); line-height: 1.4; }
-
-    /* ════════════════════════════
-       PAGE 2 — OFFER
-    ════════════════════════════ */
-    .p2-inner {
-      width: 100%; max-width: 860px;
-      display: flex; flex-direction: column;
-      align-items: center; text-align: center;
-      gap: 0;
-    }
-    .p2-badge {
-      display: inline-flex; align-items: center; gap: 6px;
-      background: var(--green); color: #000;
-      font-size: 0.68rem; font-weight: 700;
-      letter-spacing: 0.16em; text-transform: uppercase;
-      border-radius: 100px; padding: 5px 14px;
-      margin-bottom: 36px;
-      position: relative; overflow: hidden;
-    }
-    .p2-badge::after {
-      content: '';
-      position: absolute; top: 0; left: -100%;
-      width: 60%; height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
-      animation: shimmer 2.8s ease-in-out infinite;
-    }
-    @keyframes shimmer { 0%{left:-100%} 60%,100%{left:160%} }
-    .p2-price-line {
-      font-family: var(--font-d);
-      font-size: clamp(5rem, 15vw, 11rem);
-      font-weight: 800;
-      line-height: 0.9;
-      letter-spacing: -0.04em;
-      color: var(--text);
-      margin-bottom: 12px;
-    }
-    .p2-price-line .dollar { color: var(--green); }
-    .p2-label {
-      font-family: var(--font-d);
-      font-size: clamp(1.4rem, 3.5vw, 2.4rem);
-      font-weight: 700; letter-spacing: -0.02em;
-      color: var(--text); margin-bottom: 24px;
-      text-transform: uppercase;
-    }
-    .p2-desc {
-      font-size: clamp(0.95rem, 1.8vw, 1.15rem);
-      color: var(--muted);
-      line-height: 1.7;
-      max-width: 480px;
-      margin-bottom: 40px;
-    }
-    .p2-desc strong { color: var(--text); font-weight: 600; }
-    .p2-progress { width: 100%; max-width: 400px; }
-    .p2-prog-labels {
-      display: flex; justify-content: space-between;
-      font-size: 0.8rem; color: var(--muted);
-      margin-bottom: 10px; font-weight: 500;
-    }
-    .p2-prog-labels strong { color: var(--green); }
-    .p2-track {
-      height: 5px; background: rgba(0,0,0,0.07);
-      border-radius: 100px; overflow: hidden;
-    }
-    .p2-fill {
-      height: 100%; width: 32%;
-      background: var(--green);
-      border-radius: 100px;
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      color: var(--muted); text-align: center;
+      max-width: 600px; margin-bottom: 40px;
     }
 
-    /* ════════════════════════════
-       PAGE 3 — FORM
-    ════════════════════════════ */
-    .p3-inner {
-      width: 100%; max-width: 620px;
-      display: flex; flex-direction: column;
-      align-items: center; text-align: center;
+    .feature-grid {
+      display: grid; gap: 12px; width: 100%; max-width: 450px;
     }
-    .p3-title {
-      font-family: var(--font-d);
-      font-size: clamp(1.7rem, 3.8vw, 2.8rem);
-      font-weight: 700;
-      letter-spacing: -0.025em;
-      line-height: 1.15;
-      margin-bottom: 16px;
+    .f-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      padding: 16px; border-radius: 16px;
+      display: flex; align-items: center; gap: 14px;
     }
-    .p3-title em { font-style: normal; color: var(--green); }
-    .p3-sub {
-      font-size: 0.95rem; color: var(--muted);
-      line-height: 1.6; margin-bottom: 28px;
-      max-width: 440px;
-    }
-    .p3-sub strong { color: var(--text); font-weight: 600; }
-    .form-wrap {
-      width: 100%;
-      display: flex; flex-direction: column; gap: 12px;
-    }
-    .email-row { display: flex; gap: 10px; }
+    .f-icon { font-size: 1.5rem; }
+    .f-text strong { display: block; font-size: 0.9rem; color: #fff; }
+    .f-text span { font-size: 0.75rem; color: var(--muted); }
+
+    /* ── FORM ── */
+    .form-wrap { width: 100%; max-width: 500px; margin-top: 30px; }
+    .email-row { display: flex; gap: 10px; margin-bottom: 15px; }
     .email-in {
-      flex: 1;
-      border: 1.5px solid var(--border);
-      border-radius: 14px;
-      padding: 18px 22px;
-      font-size: 1rem; font-family: var(--font-b);
-      color: var(--text); background: #f9f9f9;
-      outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
+      flex: 1; background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      border-radius: 12px; padding: 16px;
+      color: #fff; outline: none;
     }
-    .email-in::placeholder { color: #bbb; }
-    .email-in:focus {
-      border-color: var(--green);
-      box-shadow: 0 0 0 4px rgba(0,200,83,0.1);
-      background: #fff;
-    }
+    .email-in:focus { border-color: var(--accent); }
+
     .join-btn {
-      background: var(--green);
-      color: #fff;
-      border: none; border-radius: 14px;
-      padding: 18px 28px;
-      font-size: 0.92rem; font-weight: 700;
-      font-family: var(--font-d);
-      letter-spacing: 0.04em;
-      cursor: pointer; white-space: nowrap;
-      box-shadow: 0 0 30px rgba(0,200,83,0.35);
-      transition: transform 0.15s, box-shadow 0.15s;
-      position: relative; overflow: hidden;
-      animation: btnPulse 2.5s ease-in-out infinite;
+      background: var(--accent); color: #fff;
+      border: none; border-radius: 12px;
+      padding: 16px 24px; font-weight: 700;
+      cursor: pointer; transition: 0.3s;
+      box-shadow: 0 10px 20px var(--accent-glow);
     }
-    .join-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 40px rgba(0,200,83,0.45);
-      animation: none;
-    }
-    .join-btn:active { transform: translateY(0); }
-    .join-btn:disabled { opacity: 0.7; cursor: wait; animation: none; }
-    @keyframes btnPulse {
-      0%,100% { box-shadow: 0 0 30px rgba(0,200,83,0.35); }
-      50%      { box-shadow: 0 0 50px rgba(0,200,83,0.6), 0 0 80px rgba(0,200,83,0.2); }
-    }
-    .micro { font-size: 0.8rem; color: #444; font-weight: 500; letter-spacing: 0.02em; text-align: center; }
+    .join-btn:hover { transform: translateY(-2px); box-shadow: 0 15px 30px var(--accent-glow); }
 
-    /* error / status */
-    .form-status {
-      font-size: 0.82rem; text-align: center;
-      min-height: 20px;
-      transition: color 0.2s;
+    /* ── ARROW ── */
+    .arrow-btn {
+      position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%);
+      background: none; border: 1px solid var(--border);
+      width: 50px; height: 50px; border-radius: 50%;
+      cursor: pointer; z-index: 100; display: flex; align-items: center; justify-content: center;
     }
-    .form-status.error { color: #d32f2f; }
-    .form-status.loading { color: var(--muted); }
+    .arrow-btn svg { stroke: #fff; width: 20px; }
 
-    /* ── SUCCESS ── */
-    .success-wrap {
-      display: none; flex-direction: column;
-      align-items: center; text-align: center; gap: 16px;
-    }
-    .success-wrap.show { display: flex; animation: fadeUp 0.5s ease both; }
-    .success-icon { font-size: 3.5rem; }
-    .success-title {
-      font-family: var(--font-d); font-size: 2.2rem;
-      font-weight: 800; letter-spacing: -0.02em; color: var(--green);
-    }
-    .success-sub { color: var(--muted); font-size: 0.95rem; line-height: 1.7; }
+    /* ── ANIMATIONS ── */
+    .anim { opacity: 0; transform: translateY(20px); transition: 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+    .anim.in { opacity: 1; transform: translateY(0); }
+    .d1 { transition-delay: 0.1s; }
+    .d2 { transition-delay: 0.2s; }
+    .d3 { transition-delay: 0.3s; }
 
-    /* ════════════════════════════
-       ANIMATION SYSTEM
-    ════════════════════════════ */
-    .anim {
-      opacity: 0;
-      transform: translateY(32px) scale(0.97);
-      filter: blur(6px);
-      transition: opacity 0.75s cubic-bezier(.22,1,.36,1),
-                  transform 0.75s cubic-bezier(.22,1,.36,1),
-                  filter 0.75s cubic-bezier(.22,1,.36,1);
-    }
-    .anim.in  { opacity: 1; transform: translateY(0) scale(1); filter: blur(0px); }
-    .anim.out { opacity: 0; transform: translateY(-24px) scale(1.02); filter: blur(4px); }
-    .d1 { transition-delay: 0s; }
-    .d2 { transition-delay: 0.10s; }
-    .d3 { transition-delay: 0.20s; }
-    .d4 { transition-delay: 0.32s; }
-    .d5 { transition-delay: 0.44s; }
-    .page { transition: opacity 0.45s ease; }
-
-    @keyframes fadeUp {
-      from { opacity:0; transform:translateY(20px); }
-      to   { opacity:1; transform:translateY(0); }
-    }
-
-    /* ── CURSOR GLOW ── */
     #cursor-glow {
-      position: fixed;
-      width: 380px; height: 380px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(0,200,83,0.07) 0%, transparent 70%);
-      pointer-events: none; z-index: 0;
-      transform: translate(-50%,-50%);
-      transition: left 0.12s ease, top 0.12s ease;
-      will-change: left, top;
+      position: fixed; width: 500px; height: 500px;
+      background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+      pointer-events: none; z-index: 0; transform: translate(-50%, -50%);
     }
-
-    /* ── ARROW BOUNCE ── */
-    @keyframes arrowBounce {
-      0%,100% { transform: translateX(-50%) translateY(0); }
-      50%     { transform: translateX(-50%) translateY(6px); }
-    }
-    .arrow-btn:not(:hover) { animation: arrowBounce 2s ease-in-out infinite; }
-
-    /* ── RIPPLE ── */
-    .ripple {
-      position: absolute; border-radius: 50%;
-      background: rgba(255,255,255,0.35);
-      transform: scale(0);
-      animation: rippleAnim 0.55s linear;
-      pointer-events: none;
-    }
-    @keyframes rippleAnim { to { transform: scale(4); opacity: 0; } }
-
-    @media (max-width: 560px) {
-      .email-row { flex-direction: column; }
-      .join-btn { width: 100%; }
-      .dots { display: none; }
-      .p2-price-line { font-size: clamp(4rem, 20vw, 6rem); }
-      .lang-btn { top: 16px; right: 16px; padding: 8px 14px 8px 10px; }
-      .lang-btn .lang-flag { font-size: 1.4rem; }
-      .lang-btn .lang-code { font-size: 0.8rem; }
-    }
+    
+    .success-wrap { display: none; text-align: center; }
+    .success-wrap.show { display: block; }
   </style>
 </head>
 <body>
 
 <div id="cursor-glow"></div>
 
-<div class="logo">Bull<span>seye</span> 🎯</div>
+<div class="logo">Viral<span>Boost</span> 🚀</div>
 
-<!-- LANGUAGE TOGGLE -->
-<button class="lang-btn" id="langBtn" aria-label="Switch language">
-  <span class="lang-flag" id="langFlag">🇺🇸</span>
-  <span class="lang-code" id="langCode">EN</span>
+<button class="lang-btn" id="langBtn">
+  <span id="langFlag">🇺🇸</span> <span id="langCode">EN</span>
 </button>
 
-<div class="dots" id="dots">
+<div class="dots">
   <div class="dot active" data-page="0"></div>
   <div class="dot" data-page="1"></div>
   <div class="dot" data-page="2"></div>
 </div>
 
 <div class="pages">
-
   <!-- PAGE 1: HERO -->
   <div class="page active" id="page0">
-    <h1 class="p1-title anim d1" data-i18n="p1Title">More than trading:<br><em>Hunt the opportunity.</em></h1>
-    <p class="p1-sub anim d3" data-i18n="p1Sub">
-      <strong>150+ lessons. Boss Fights. A real-world Arena.</strong><br>
-      Built for everyone — from 8 to 80 years old.
-    </p>
-    <div class="pricing-clarity anim d4">
-      <div class="pc-row pc-free">
-        <span class="pc-check">✓</span>
-        <div><strong data-i18n="pcFreeTitle">Units 1–3 — FREE forever</strong><br><span class="pc-sub" data-i18n="pcFreeSub">Try it risk-free. No card, no catch.</span></div>
+    <h1 class="p1-title anim d1" data-i18n="p1Title">Escape the <br><em>200-view jail.</em></h1>
+    <p class="p1-sub anim d2" data-i18n="p1Sub">AI-powered retention coaching. We fix your hooks and dub your voice for a global audience.</p>
+    
+    <div class="feature-grid anim d3">
+      <div class="f-card">
+        <span class="f-icon">📊</span>
+        <div class="f-text">
+          <strong data-i18n="f1T">Viral Score (0-100)</strong>
+          <span data-i18n="f1S">Know if your video flops before you post.</span>
+        </div>
       </div>
-      <div class="pc-row pc-shark">
-        <span class="pc-check">⚡</span>
-        <div><strong data-i18n="pcSharkTitle">Early Shark — €9.99 one-time</strong><br><span class="pc-sub" data-i18n="pcSharkSub">Lifetime VIP: full content, Arena &amp; advanced lessons.</span></div>
-      </div>
-      <div class="pc-row pc-wait">
-        <span class="pc-check">○</span>
-        <div><strong data-i18n="pcWaitTitle">Waitlist — €0 (FREE)</strong><br><span class="pc-sub" data-i18n="pcWaitSub">Reserve your spot. Pay only if you want VIP.</span></div>
+      <div class="f-card">
+        <span class="f-icon">🎙️</span>
+        <div class="f-text">
+          <strong data-i18n="f2T">Global Dubbing</strong>
+          <span data-i18n="f2S">Your voice, any language. Built-in ElevenLabs.</span>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- PAGE 2: OFFER -->
+  <!-- PAGE 2: PRICING/URGENCY -->
   <div class="page" id="page1">
-    <div class="p2-inner">
-      <div class="p2-badge anim d1" data-i18n="p2Badge">⚡ Limited Early Access</div>
-      <div class="p2-price-line anim d2"><span class="dollar">9,99€</span></div>
-      <div class="p2-label anim d3" data-i18n="p2Label">Lifetime Access — One-time</div>
-      <p class="p2-desc anim d4" data-i18n="p2Desc">
-        No subscriptions. No recurring fees.<br>
-        <strong>Pay once, hunt forever.</strong><br>
-        Price goes up after the first 100 people. 🔒
-      </p>
-      <div class="p2-progress anim d5">
-        <div class="p2-prog-labels">
-          <span data-i18n="p2Spots">Spots claimed</span>
-          <strong data-i18n="p2Left">68 / 100 left</strong>
-        </div>
-        <div class="p2-track">
-          <div class="p2-fill" id="progressFill" style="width:32%"></div>
-        </div>
-      </div>
+    <h2 class="p1-title anim d1" data-i18n="p2Title">Go global for the<br>price of a <em>coffee.</em></h2>
+    <p class="p1-sub anim d2" data-i18n="p2Sub">Skip the $2000/mo editor. Get a full AI strategy for $4.99/week.</p>
+    <div class="f-card anim d3" style="border-color: var(--accent);">
+       <span class="f-icon">✨</span>
+       <div class="f-text">
+         <strong data-i18n="p2Promo">Beta Access: $4.99 "Test Week"</strong>
+         <span data-i18n="p2Limit">Limited to the first 100 creators.</span>
+       </div>
     </div>
   </div>
 
   <!-- PAGE 3: FORM -->
   <div class="page" id="page2">
-    <div class="p3-inner">
-      <h2 class="p3-title anim d1" data-i18n="p3Title">
-        Ready to become the next<br>Wall Street shark for the<br>price of a <em>pizza?</em> 🍕
-      </h2>
-      <p class="p3-sub anim d2" data-i18n="p3Sub">
-        <strong>Get Lifetime Access for 9,99€</strong> — Limited to the first 100 spots.
-      </p>
-
-      <div class="form-wrap anim d3" id="formWrap">
-        <div class="email-row">
-          <input type="email" class="email-in" id="emailIn" placeholder="your@email.com" autocomplete="email" />
-          <button class="join-btn" id="joinBtn" data-i18n="joinBtn">CLAIM MY SPOT 🎯</button>
-        </div>
-        <div class="form-status" id="formStatus"></div>
-        <p class="micro" data-i18n="micro">No spam. No BS. Unsubscribe anytime.</p>
+    <div class="form-wrap anim d1" id="formWrap">
+      <h2 class="p3-title" style="font-size: 2rem; margin-bottom: 10px;" data-i18n="p3T">Get early access.</h2>
+      <p style="color: var(--muted); margin-bottom: 25px;" data-i18n="p3S">We’re opening the doors for 100 creators this week.</p>
+      
+      <div class="email-row">
+        <input type="email" class="email-in" id="emailIn" placeholder="your@email.com">
+        <button class="join-btn" id="joinBtn" data-i18n="btn">JOIN BETA 🎯</button>
       </div>
+      <div id="formStatus" style="font-size: 0.8rem;"></div>
+    </div>
 
-      <div class="success-wrap" id="successWrap">
-        <div class="success-icon">🎯</div>
-        <div class="success-title" data-i18n="successTitle">You're in the water.</div>
-        <p class="success-sub" data-i18n="successSub">
-          Welcome to the tribe — you're one of the first 100.<br>
-          The hunt begins soon.
-        </p>
-      </div>
+    <div class="success-wrap" id="successWrap">
+      <h2 style="font-size: 3rem;">🔥</h2>
+      <h2 data-i18n="sT">You're on the list!</h2>
+      <p data-i18n="sS">Check your email. The jailbreak starts soon.</p>
     </div>
   </div>
-
 </div>
 
-<button class="arrow-btn" id="arrowBtn" aria-label="Next section">
-  <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <polyline points="6 9 12 15 18 9"></polyline>
-  </svg>
+<button class="arrow-btn" id="arrowBtn">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
 </button>
 
 <script>
-  // ════════════════════════════════════════
-  // TRANSLATIONS
-  // ════════════════════════════════════════
   const TRANSLATIONS = {
     en: {
-      eyebrow:      'The Duolingo of Trading',
-      p1Title:      'More than trading:<br><em>Hunt the opportunity.</em>',
-      p1Sub:        '<strong>150+ lessons. Boss Fights. A real-world Arena.</strong><br>Built for everyone — from 8 to 80 years old.',
-      pcFreeTitle:  'Units 1–3 — FREE forever',
-      pcFreeSub:    'Try it risk-free. No card, no catch.',
-      pcSharkTitle: 'Early Shark — €9.99 one-time',
-      pcSharkSub:   'Lifetime VIP: full content, Arena &amp; advanced lessons.',
-      pcWaitTitle:  'Waitlist — €0 (FREE)',
-      pcWaitSub:    'Reserve your spot. Pay only if you want VIP.',
-      p2Badge:      '⚡ Limited Early Access',
-      p2Label:      'Lifetime Access — One-time',
-      p2Desc:       'No subscriptions. No recurring fees.<br><strong>Pay once, hunt forever.</strong><br>Price goes up after the first 100 people. 🔒',
-      p2Spots:      'Spots claimed',
-      p2Left:       '68 / 100 left',
-      p3Title:      'Ready to become the next<br>Wall Street shark for the<br>price of a <em>pizza?</em> 🍕',
-      p3Sub:        '<strong>Get Lifetime Access for 9,99€</strong> — Limited to the first 100 spots.',
-      joinBtn:      'CLAIM MY SPOT 🎯',
-      emailPh:      'your@email.com',
-      micro:        'No spam. No BS. Unsubscribe anytime.',
-      successTitle: 'You\'re in the water.',
-      successSub:   'Welcome to the tribe — you\'re one of the first 100.<br>The hunt begins soon.',
-      joining:      'Joining...',
-      errGeneric:   'Something went wrong. Try again.',
+      p1Title: 'Escape the <br><em>200-view jail.</em>',
+      p1Sub: 'AI-powered retention coaching. We fix your hooks and dub your voice for a global audience.',
+      f1T: 'Viral Score (0-100)', f1S: 'Know if your video flops before you post.',
+      f2T: 'Global Dubbing', f2S: 'Your voice, any language. Built-in ElevenLabs.',
+      p2Title: 'Go global for the<br>price of a <em>coffee.</em>',
+      p2Sub: 'Skip the $2000/mo editor. Get a full AI strategy for $4.99/week.',
+      p2Promo: 'Beta Access: $4.99 "Test Week"', p2Limit: 'Limited to the first 100 creators.',
+      p3T: 'Get early access.', p3S: 'We’re opening the doors for 100 creators this week.',
+      btn: 'JOIN BETA 🎯', sT: "You're on the list!", sS: 'Check your email. The jailbreak starts soon.',
+      wait: 'Joining...', err: 'Error. Try again.'
     },
     ro: {
-      eyebrow:      'Duolingo-ul Tradingului',
-      p1Title:      'Mai mult decât tranzacții:<br><em>Vânează oportunitatea.</em>',
-      p1Sub:        '<strong>150+ lecții. Boss Fights. O Arenă reală.</strong><br>Creat pentru toți — de la 8 la 80 de ani.',
-      pcFreeTitle:  'Unitățile 1–3 — GRATUIT pe viață',
-      pcFreeSub:    'Testează fără risc. Fără card, fără obligații.',
-      pcSharkTitle: 'Early Shark — 9,99€ o singură dată',
-      pcSharkSub:   'VIP pe viață: tot conținutul, Arena &amp; lecțiile avansate.',
-      pcWaitTitle:  'Waitlist — 0€ (GRATUIT)',
-      pcWaitSub:    'Îți rezervi locul. Plătești doar dacă vrei VIP.',
-      p2Badge:      '⚡ Acces Timpuriu Limitat',
-      p2Label:      'Acces pe Viață — O singură plată',
-      p2Desc:       'Fără abonamente. Fără taxe recurente.<br><strong>Plătești o dată, vânezi pentru totdeauna.</strong><br>Prețul crește după primii 100 de oameni. 🔒',
-      p2Spots:      'Locuri revendicate',
-      p2Left:       '68 / 100 rămase',
-      p3Title:      'Gata să devii următorul<br>rechin de pe Wall Street la<br>prețul unei <em>pizza?</em> 🍕',
-      p3Sub:        '<strong>Obține Acces pe Viață pentru 9,99€</strong> — Limitat la primele 100 de locuri.',
-      joinBtn:      'REVENDICĂ-MI LOCUL 🎯',
-      emailPh:      'emailul@tau.com',
-      micro:        'Fără spam. Fără BS. Dezabonare oricând.',
-      successTitle: 'Ești în apă.',
-      successSub:   'Bun venit în trib — ești printre primii 100.<br>Vânătoarea începe curând.',
-      joining:      'Se trimite...',
-      errGeneric:   'Ceva a mers greșit. Încearcă din nou.',
+      p1Title: 'Scapă de închisoarea<br><em>celor 200 views.</em>',
+      p1Sub: 'Coaching de retenție cu AI. Îți reparăm hook-ul și îți dublăm vocea pentru o audiență globală.',
+      f1T: 'Viral Score (0-100)', f1S: 'Află dacă videoul tău moare înainte să-l postezi.',
+      f2T: 'Dublare Globală', f2S: 'Vocea ta în orice limbă. ElevenLabs integrat.',
+      p2Title: 'Devino global la<br>prețul unei <em>cafele.</em>',
+      p2Sub: 'Uită de editori de 2000$/lună. Strategie AI completă la 4.99$/săptămână.',
+      p2Promo: 'Beta Access: 4.99$ "Test Week"', p2Limit: 'Limitat la primii 100 de creatori.',
+      p3T: 'Cere acces timpuriu.', p3S: 'Deschidem porțile pentru 100 de creatori săptămâna asta.',
+      btn: 'INTRĂ ÎN BETA 🎯', sT: 'Ești pe listă!', sS: 'Verifică email-ul. Scăpăm de cele 200 de vizualizări curând.',
+      wait: 'Se trimite...', err: 'Eroare. Încearcă din nou.'
     }
   };
 
-  let currentLang = localStorage.getItem('bseye_lang') || 'en';
-
+  let currentLang = 'en';
   function applyLang(lang) {
     currentLang = lang;
-    localStorage.setItem('bseye_lang', lang);
     const T = TRANSLATIONS[lang];
-
-    // Update all data-i18n elements
     document.querySelectorAll('[data-i18n]').forEach(el => {
       const key = el.dataset.i18n;
-      if (T[key] !== undefined) el.innerHTML = T[key];
+      if (T[key]) el.innerHTML = T[key];
     });
-
-    // Email placeholder
-    document.getElementById('emailIn').placeholder = T.emailPh;
-
-    // Lang button appearance: show current lang
     document.getElementById('langFlag').textContent = lang === 'ro' ? '🇷🇴' : '🇺🇸';
-    document.getElementById('langCode').textContent  = lang === 'ro' ? 'RO' : 'EN';
-
-    // html lang attr
-    document.documentElement.lang = lang;
+    document.getElementById('langCode').textContent = lang.toUpperCase();
   }
+  document.getElementById('langBtn').addEventListener('click', () => applyLang(currentLang === 'en' ? 'ro' : 'en'));
 
-  document.getElementById('langBtn').addEventListener('click', () => {
-    applyLang(currentLang === 'en' ? 'ro' : 'en');
-  });
-
-  // Init
-  applyLang(currentLang);
-
-  // ════════════════════════════════════════
-  // SUPABASE CONFIG
-  // ════════════════════════════════════════
-  const SUPABASE_URL  = 'https://uutxxjvwlnjviwqzazmy.supabase.co';
+  // SUPABASE
+  const SUPABASE_URL = 'https://uutxxjvwlnjviwqzazmy.supabase.co';
   const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1dHh4anZ3bG5qdml3cXphem15Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNDU1NDUsImV4cCI6MjA5MTkyMTU0NX0.7bM2pQaO1ZCItvTIVyzKOHnZlUXrvdsK6Gpo96anaXc';
 
-  async function saveEmail(email) {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/waitlist`, {
-      method: 'POST',
-      headers: {
-        'apikey': SUPABASE_ANON,
-        'Authorization': `Bearer ${SUPABASE_ANON}`,
-        'Content-Type': 'application/json',
-        'Prefer': 'return=minimal'
-      },
-      body: JSON.stringify({ email })
-    });
-    if (!res.ok) {
-      const text = await res.text();
-      console.error('Supabase error:', res.status, text);
-      if (res.status === 409) return { duplicate: true };
-      throw new Error(`${res.status}: ${text}`);
-    }
-    return { ok: true };
-  }
-
-  // ════════════════════════════════════════
-  // PAGE NAVIGATION
-  // ════════════════════════════════════════
-  const PAGES = ['page0','page1','page2'];
-  let cur = 0, transitioning = false;
-  const arrowBtn = document.getElementById('arrowBtn');
-  const dots = document.querySelectorAll('.dot');
-
-  function animateIn(pageEl) {
-    const anims = pageEl.querySelectorAll('.anim');
-    anims.forEach(el => { el.classList.remove('in','out'); void el.offsetWidth; });
-    requestAnimationFrame(() => anims.forEach(el => el.classList.add('in')));
-    if (pageEl.id === 'page1') {
-      const fill = document.getElementById('progressFill');
-      fill.style.transition = 'none'; fill.style.width = '0%';
-      setTimeout(() => { fill.style.transition = 'width 1.2s cubic-bezier(.22,1,.36,1)'; fill.style.width = '32%'; }, 400);
-      setTimeout(animatePrice, 300);
-    }
-  }
-
-  function animateOut(pageEl) {
-    pageEl.querySelectorAll('.anim').forEach(el => { el.classList.remove('in'); el.classList.add('out'); });
-  }
-
-  function goTo(index) {
-    if (index === cur || transitioning || index < 0 || index >= PAGES.length) return;
-    transitioning = true;
-    const oldPage = document.getElementById(PAGES[cur]);
-    const newPage = document.getElementById(PAGES[index]);
-    animateOut(oldPage);
-    setTimeout(() => {
-      oldPage.classList.remove('active');
-      newPage.classList.add('active');
-      animateIn(newPage);
-      cur = index; updateUI(); transitioning = false;
-    }, 320);
-  }
-
-  function updateUI() {
-    dots.forEach((d,i) => d.classList.toggle('active', i === cur));
-    arrowBtn.classList.toggle('hidden', cur === PAGES.length - 1);
-  }
-
-  arrowBtn.addEventListener('click', () => goTo(cur + 1));
-  dots.forEach(d => d.addEventListener('click', () => goTo(+d.dataset.page)));
-  document.addEventListener('keydown', e => {
-    if (e.key === 'ArrowDown' || e.key === 'ArrowRight') goTo(cur + 1);
-    if (e.key === 'ArrowUp'   || e.key === 'ArrowLeft')  goTo(cur - 1);
-  });
-
-  let lastWheel = 0;
-  document.addEventListener('wheel', e => {
-    const now = Date.now(); if (now - lastWheel < 900) return; lastWheel = now;
-    if (e.deltaY > 30) goTo(cur + 1); else if (e.deltaY < -30) goTo(cur - 1);
-  }, { passive: true });
-
-  let touchY = 0;
-  document.addEventListener('touchstart', e => { touchY = e.touches[0].clientY; }, { passive: true });
-  document.addEventListener('touchend', e => {
-    const diff = touchY - e.changedTouches[0].clientY;
-    if (diff > 40) goTo(cur + 1); else if (diff < -40) goTo(cur - 1);
-  }, { passive: true });
-
-  // ════════════════════════════════════════
-  // FORM SUBMISSION → SUPABASE
-  // ════════════════════════════════════════
-  const joinBtn    = document.getElementById('joinBtn');
-  const emailIn    = document.getElementById('emailIn');
-  const formStatus = document.getElementById('formStatus');
-  const formWrap   = document.getElementById('formWrap');
-  const successWrap= document.getElementById('successWrap');
-
-  joinBtn.addEventListener('click', async (e) => {
-    // ripple
-    const r = joinBtn.getBoundingClientRect();
-    const rip = document.createElement('span');
-    rip.className = 'ripple';
-    const size = Math.max(r.width, r.height);
-    rip.style.cssText = `width:${size}px;height:${size}px;left:${e.clientX-r.left-size/2}px;top:${e.clientY-r.top-size/2}px`;
-    joinBtn.appendChild(rip);
-    setTimeout(() => rip.remove(), 560);
-
-    const email = emailIn.value.trim();
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      emailIn.style.borderColor = 'rgba(220,50,50,0.5)';
-      emailIn.focus();
-      return;
-    }
-    emailIn.style.borderColor = '';
-    joinBtn.textContent = TRANSLATIONS[currentLang].joining;
+  const joinBtn = document.getElementById('joinBtn');
+  joinBtn.addEventListener('click', async () => {
+    const email = document.getElementById('emailIn').value;
+    if(!email) return;
+    
     joinBtn.disabled = true;
-    formStatus.className = 'form-status loading';
-    formStatus.textContent = '';
+    joinBtn.textContent = TRANSLATIONS[currentLang].wait;
 
     try {
-      await saveEmail(email);
-      showSuccess();
-    } catch (err) {
-      console.error('Submit error:', err);
-      formStatus.className = 'form-status error';
-      formStatus.textContent = TRANSLATIONS[currentLang].errGeneric;
-      joinBtn.textContent = TRANSLATIONS[currentLang].joinBtn;
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/waitlist`, {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_ANON,
+          'Authorization': `Bearer ${SUPABASE_ANON}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email })
+      });
+      if(res.ok) {
+        document.getElementById('formWrap').style.display = 'none';
+        document.getElementById('successWrap').classList.add('show');
+      }
+    } catch (e) {
+      document.getElementById('formStatus').textContent = TRANSLATIONS[currentLang].err;
       joinBtn.disabled = false;
     }
   });
 
-  function showSuccess() {
-    formWrap.style.display = 'none';
-    successWrap.classList.add('show');
+  // NAV
+  let cur = 0;
+  const pages = document.querySelectorAll('.page');
+  const dots = document.querySelectorAll('.dot');
+  
+  function goTo(idx) {
+    if(idx < 0 || idx >= pages.length) return;
+    pages[cur].classList.remove('active');
+    pages[idx].classList.add('active');
+    dots[cur].classList.remove('active');
+    dots[idx].classList.add('active');
+    cur = idx;
+    const anims = pages[cur].quer
+    ySelectorAll('.anim');
+    anims.forEach(a => a.classList.add('in'));
   }
 
-  emailIn.addEventListener('input', () => { emailIn.style.borderColor = ''; });
+  document.getElementById('arrowBtn').addEventListener('click', () => goTo(cur + 1));
+  dots.forEach((d, i) => d.addEventListener('click', () => goTo(i)));
+  document.addEventListener('wheel', (e) => { if(e.deltaY > 0) goTo(cur+1); else goTo(cur-1); });
 
-  // ════════════════════════════════════════
-  // EXTRAS
-  // ════════════════════════════════════════
+  // CURSOR
   const glow = document.getElementById('cursor-glow');
   document.addEventListener('mousemove', e => {
     glow.style.left = e.clientX + 'px';
-    glow.style.top  = e.clientY + 'px';
+    glow.style.top = e.clientY + 'px';
   });
 
-  joinBtn.addEventListener('mousemove', e => {
-    const r = joinBtn.getBoundingClientRect();
-    const dx = e.clientX - (r.left + r.width/2);
-    const dy = e.clientY - (r.top  + r.height/2);
-    joinBtn.style.transform = `translate(${dx*0.22}px, ${dy*0.22 - 2}px)`;
-  });
-  joinBtn.addEventListener('mouseleave', () => { joinBtn.style.transform = ''; });
-
-  function animatePrice() {
-    const el = document.querySelector('.p2-price-line');
-    let start = 0, end = 9.99, dur = 900;
-    const t0 = performance.now();
-    function step(now) {
-      const p = Math.min((now - t0) / dur, 1);
-      const ease = 1 - Math.pow(1 - p, 3);
-      el.innerHTML = `<span class="dollar">${(start + (end - start) * ease).toFixed(2).replace('.',',')}€</span>`;
-      if (p < 1) requestAnimationFrame(step);
-    }
-    requestAnimationFrame(step);
-  }
-
-  animateIn(document.getElementById('page0'));
-  updateUI();
+  // INIT
+  applyLang('en');
+  setTimeout(() => pages[0].querySelectorAll('.anim').forEach(a => a.classList.add('in')), 100);
 </script>
 </body>
 </html>
