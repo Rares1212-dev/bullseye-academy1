@@ -6,328 +6,253 @@
   <title>ViralBoost — Break the 200-view jail.</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700;800&display=swap" rel="stylesheet" />
   <style>
+    /* RESET & CORE */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      /* Culoare AI Vibrantă */
       --accent: #8a2be2; 
-      --accent-glow: rgba(138, 43, 226, 0.25);
-      --bg: #050505; /* Black deeper */
+      --accent-glow: rgba(138, 43, 226, 0.3);
+      --bg: #050505;
       --text: #f0f0f0;
       --muted: #888;
       --border: rgba(255,255,255,0.1);
-      --font-d: 'DM Sans', -apple-system, sans-serif;
     }
 
-    html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bg); }
-    body {
-      color: var(--text);
-      font-family: var(--font-d);
-      -webkit-font-smoothing: antialiased;
+    body, html {
+      width: 100%; height: 100%;
+      background: var(--bg); color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      overflow: hidden;
     }
 
-    /* ── PAGES ── */
-    .pages { width: 100%; height: 100vh; position: relative; }
-    .page {
-      position: absolute; inset: 0;
+    /* SCROLL CONTAINER */
+    .main-container {
+      width: 100%; height: 100vh;
+      overflow-y: scroll;
+      scroll-snap-type: y mandatory;
+      scroll-behavior: smooth;
+    }
+
+    section {
+      width: 100%; height: 100vh;
       display: flex; flex-direction: column;
       align-items: center; justify-content: center;
-      padding: 80px 24px;
-      pointer-events: none; opacity: 0;
-      transition: opacity 0.5s ease;
+      position: relative;
+      scroll-snap-align: start;
+      padding: 0 20px;
     }
-    .page.active { pointer-events: all; opacity: 1; }
 
-    /* ── LOGO ── */
+    /* UI ELEMENTS */
     .logo {
-      position: fixed; top: 36px; left: 50%; transform: translateX(-50%);
-      font-size: 1.2rem; font-weight: 800;
-      letter-spacing: -0.02em; color: var(--text);
-      z-index: 100;
+      position: fixed; top: 30px; left: 30px;
+      font-size: 1.5rem; font-weight: 800; z-index: 1000;
     }
     .logo span { color: var(--accent); }
 
-    /* ── LANG BUTTON ── */
-    .lang-btn {
-      position: fixed; top: 24px; right: 24px; z-index: 200;
-      display: flex; align-items: center; gap: 8px;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid var(--border);
-      border-radius: 100px; padding: 8px 16px;
-      color: var(--text); font-size: 0.8rem; font-weight: 700;
-      cursor: pointer; backdrop-filter: blur(10px);
+    .lang-toggle {
+      position: fixed; top: 30px; right: 80px;
+      z-index: 1000; background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border); color: white;
+      padding: 8px 15px; border-radius: 100px; cursor: pointer;
     }
 
-    /* ── DOTS ── */
-    .dots {
-      position: fixed; right: 32px; top: 50%; transform: translateY(-50%);
-      display: flex; flex-direction: column; gap: 10px; z-index: 100;
+    .nav-dots {
+      position: fixed; right: 30px; top: 50%;
+      transform: translateY(-50%);
+      display: flex; flex-direction: column; gap: 15px; z-index: 1000;
     }
     .dot {
-      width: 8px; height: 8px; border-radius: 50%;
-      background: rgba(255,255,255,0.2);
-      transition: 0.3s; cursor: pointer;
+      width: 12px; height: 12px; border-radius: 50%;
+      border: 2px solid var(--accent); transition: 0.3s; cursor: pointer;
     }
-    .dot.active { background: var(--accent); transform: scale(1.5); box-shadow: 0 0 10px var(--accent); }
+    .dot.active { background: var(--accent); transform: scale(1.3); }
 
-    /* ── CONTENT STYLES ── */
-    .p1-title {
-      font-size: clamp(2.5rem, 8vw, 5.5rem);
-      font-weight: 800; line-height: 1;
-      text-align: center; margin-bottom: 24px;
-      letter-spacing: -0.04em;
+    /* HERO STYLES */
+    .hero-title {
+      font-size: clamp(2.5rem, 10vw, 6rem);
+      font-weight: 800; text-align: center;
+      line-height: 0.9; letter-spacing: -0.05em; margin-bottom: 20px;
     }
-    .p1-title em { font-style: normal; color: var(--accent); text-shadow: 0 0 30px var(--accent-glow); }
-
-    .p1-sub {
-      font-size: clamp(1rem, 2vw, 1.2rem);
-      color: var(--muted); text-align: center;
-      max-width: 600px; margin-bottom: 40px;
-    }
-
-    .feature-grid {
-      display: grid; gap: 12px; width: 100%; max-width: 450px;
-    }
-    .f-card {
-      background: rgba(255,255,255,0.03);
-      border: 1px solid var(--border);
-      padding: 16px; border-radius: 16px;
-      display: flex; align-items: center; gap: 14px;
-    }
-    .f-icon { font-size: 1.5rem; }
-    .f-text strong { display: block; font-size: 0.9rem; color: #fff; }
-    .f-text span { font-size: 0.75rem; color: var(--muted); }
-
-    /* ── FORM ── */
-    .form-wrap { width: 100%; max-width: 500px; margin-top: 30px; }
-    .email-row { display: flex; gap: 10px; margin-bottom: 15px; }
-    .email-in {
-      flex: 1; background: rgba(255,255,255,0.05);
-      border: 1px solid var(--border);
-      border-radius: 12px; padding: 16px;
-      color: #fff; outline: none;
-    }
-    .email-in:focus { border-color: var(--accent); }
-
-    .join-btn {
-      background: var(--accent); color: #fff;
-      border: none; border-radius: 12px;
-      padding: 16px 24px; font-weight: 700;
-      cursor: pointer; transition: 0.3s;
-      box-shadow: 0 10px 20px var(--accent-glow);
-    }
-    .join-btn:hover { transform: translateY(-2px); box-shadow: 0 15px 30px var(--accent-glow); }
-
-    /* ── ARROW ── */
-    .arrow-btn {
-      position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%);
-      background: none; border: 1px solid var(--border);
-      width: 50px; height: 50px; border-radius: 50%;
-      cursor: pointer; z-index: 100; display: flex; align-items: center; justify-content: center;
-    }
-    .arrow-btn svg { stroke: #fff; width: 20px; }
-
-    /* ── ANIMATIONS ── */
-    .anim { opacity: 0; transform: translateY(20px); transition: 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
-    .anim.in { opacity: 1; transform: translateY(0); }
-    .d1 { transition-delay: 0.1s; }
-    .d2 { transition-delay: 0.2s; }
-    .d3 { transition-delay: 0.3s; }
-
-    #cursor-glow {
-      position: fixed; width: 500px; height: 500px;
-      background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
-      pointer-events: none; z-index: 0; transform: translate(-50%, -50%);
-    }
+    .hero-title em { font-style: normal; color: var(--accent); }
     
-    .success-wrap { display: none; text-align: center; }
-    .success-wrap.show { display: block; }
+    /* GLOW */
+    #glow {
+      position: fixed; width: 600px; height: 600px;
+      background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+      pointer-events: none; transform: translate(-50%, -50%); z-index: 0;
+    }
+
+    .scroll-indicator {
+      position: absolute; bottom: 30px;
+      animation: bounce 2s infinite; cursor: pointer;
+    }
+    @keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform: translateY(0);} 40% {transform: translateY(-10px);} 60% {transform: translateY(-5px);} }
+    
+    .btn-main {
+      background: var(--accent); color: #fff; border: none;
+      border-radius: 12px; padding: 18px 30px; font-weight: 700;
+      cursor: pointer; transition: 0.3s;
+    }
+    .btn-main:hover { transform: translateY(-3px); box-shadow: 0 10px 20px var(--accent-glow); }
   </style>
 </head>
 <body>
 
-<div id="cursor-glow"></div>
+<div id="glow"></div>
+<div class="logo">Viral<span>Boost</span></div>
 
-<div class="logo">Viral<span>Boost</span> 🚀</div>
+<button class="lang-toggle" onclick="toggleLang()">🇺🇸 EN</button>
 
-<button class="lang-btn" id="langBtn">
-  <span id="langFlag">🇺🇸</span> <span id="langCode">EN</span>
-</button>
-
-<div class="dots">
-  <div class="dot active" data-page="0"></div>
-  <div class="dot" data-page="1"></div>
-  <div class="dot" data-page="2"></div>
+<div class="nav-dots">
+  <div class="dot active" onclick="scrollToPage(0)"></div>
+  <div class="dot" onclick="scrollToPage(1)"></div>
+  <div class="dot" onclick="scrollToPage(2)"></div>
 </div>
 
-<div class="pages">
+<div class="main-container" id="mainContainer">
+  
   <!-- PAGE 1: HERO -->
-  <div class="page active" id="page0">
-    <h1 class="p1-title anim d1" data-i18n="p1Title">Escape the <br><em>200-view jail.</em></h1>
-    <p class="p1-sub anim d2" data-i18n="p1Sub">AI-powered retention coaching. We fix your hooks and dub your voice for a global audience.</p>
-    
-    <div class="feature-grid anim d3">
-      <div class="f-card">
-        <span class="f-icon">📊</span>
-        <div class="f-text">
-          <strong data-i18n="f1T">Viral Score (0-100)</strong>
-          <span data-i18n="f1S">Know if your video flops before you post.</span>
-        </div>
-      </div>
-      <div class="f-card">
-        <span class="f-icon">🎙️</span>
-        <div class="f-text">
-          <strong data-i18n="f2T">Global Dubbing</strong>
-          <span data-i18n="f2S">Your voice, any language. Built-in ElevenLabs.</span>
-        </div>
-      </div>
+  <section id="page0">
+    <h1 class="hero-title" data-i18n="p1Title">Escape the <br><em>200-view jail.</em></h1>
+    <p style="color: var(--muted); font-size: 1.2rem; max-width: 600px; text-align: center; margin-bottom: 40px;" data-i18n="p1Sub">
+      AI coaching built to fix your hooks and dub your voice for a global audience.
+    </p>
+    <div class="scroll-indicator" onclick="scrollToPage(1)">
+      <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M7 13l5 5 5-5M7 6l5 5 5-5"/></svg>
     </div>
-  </div>
+  </section>
 
-  <!-- PAGE 2: PRICING/URGENCY -->
-  <div class="page" id="page1">
-    <h2 class="p1-title anim d1" data-i18n="p2Title">Go global for the<br>price of a <em>coffee.</em></h2>
-    <p class="p1-sub anim d2" data-i18n="p2Sub">Skip the $2000/mo editor. Get a full AI strategy for $4.99/week.</p>
-    <div class="f-card anim d3" style="border-color: var(--accent);">
-       <span class="f-icon">✨</span>
-       <div class="f-text">
-         <strong data-i18n="p2Promo">Beta Access: $4.99 "Test Week"</strong>
-         <span data-i18n="p2Limit">Limited to the first 100 creators.</span>
-       </div>
+  <!-- PAGE 2: FEATURES -->
+  <section id="page1" style="background: radial-gradient(circle at bottom, #110022 0%, #050505 100%);">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; max-width: 1100px; width: 100%;">
+      <div>
+        <h2 style="font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.1; margin-bottom: 20px;" data-i18n="p2Title">Go global for the price of a <em>coffee.</em></h2>
+        <p style="color: var(--muted); font-size: 1.1rem;" data-i18n="p2Sub">Skip the $2,000/mo editor. Get a full AI strategy for $4.99/week.</p>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 15px;">
+        <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border); padding: 20px; border-radius: 15px;">
+          <strong style="display:block" data-i18n="f1T">Viral Score (0-100)</strong>
+          <span style="color: var(--muted); font-size: 0.9rem;" data-i18n="f1S">Predict if your video flops before you post.</span>
+        </div>
+        <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border); padding: 20px; border-radius: 15px; border-left: 4px solid var(--accent);">
+          <strong style="display:block" data-i18n="p2Promo">Beta Access: $4.99</strong>
+          <span style="color: var(--muted); font-size: 0.9rem;" data-i18n="p2Limit">Limited to first 100 creators.</span>
+        </div>
+      </div>
     </div>
-  </div>
+    <div class="scroll-indicator" onclick="scrollToPage(2)">
+      <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M7 13l5 5 5-5M7 6l5 5 5-5"/></svg>
+    </div>
+  </section>
 
   <!-- PAGE 3: FORM -->
-  <div class="page" id="page2">
-    <div class="form-wrap anim d1" id="formWrap">
-      <h2 class="p3-title" style="font-size: 2rem; margin-bottom: 10px;" data-i18n="p3T">Get early access.</h2>
-      <p style="color: var(--muted); margin-bottom: 25px;" data-i18n="p3S">We’re opening the doors for 100 creators this week.</p>
-      
-      <div class="email-row">
-        <input type="email" class="email-in" id="emailIn" placeholder="your@email.com">
-        <button class="join-btn" id="joinBtn" data-i18n="btn">JOIN BETA 🎯</button>
+  <section id="page2">
+    <div id="formWrap" style="text-align: center; max-width: 500px; width: 100%;">
+      <h2 style="font-size: 2.5rem; margin-bottom: 10px;" data-i18n="p3T">Get early access.</h2>
+      <p style="color: var(--muted); margin-bottom: 30px;" data-i18n="p3S">Join the waitlist for the next batch of creators.</p>
+      <div style="display: flex; gap: 10px;">
+        <input type="email" id="emailIn" placeholder="email@example.com" style="flex: 1; padding: 15px; border-radius: 12px; border: 1px solid var(--border); background: #111; color: white;">
+        <button class="btn-main" id="joinBtn" data-i18n="btn">JOIN BETA</button>
       </div>
-      <div id="formStatus" style="font-size: 0.8rem;"></div>
+      <p id="formStatus" style="margin-top: 15px; font-size: 0.8rem;"></p>
     </div>
+    <div id="successWrap" style="display: none; text-align: center;">
+        <h2 style="font-size: 3rem;">🚀</h2>
+        <h2 data-i18n="sT">You're in!</h2>
+        <p data-i18n="sS">We will contact you soon.</p>
+    </div>
+  </section>
 
-    <div class="success-wrap" id="successWrap">
-      <h2 style="font-size: 3rem;">🔥</h2>
-      <h2 data-i18n="sT">You're on the list!</h2>
-      <p data-i18n="sS">Check your email. The jailbreak starts soon.</p>
-    </div>
-  </div>
 </div>
-
-<button class="arrow-btn" id="arrowBtn">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-</button>
 
 <script>
   const TRANSLATIONS = {
     en: {
       p1Title: 'Escape the <br><em>200-view jail.</em>',
-      p1Sub: 'AI-powered retention coaching. We fix your hooks and dub your voice for a global audience.',
-      f1T: 'Viral Score (0-100)', f1S: 'Know if your video flops before you post.',
-      f2T: 'Global Dubbing', f2S: 'Your voice, any language. Built-in ElevenLabs.',
-      p2Title: 'Go global for the<br>price of a <em>coffee.</em>',
-      p2Sub: 'Skip the $2000/mo editor. Get a full AI strategy for $4.99/week.',
-      p2Promo: 'Beta Access: $4.99 "Test Week"', p2Limit: 'Limited to the first 100 creators.',
-      p3T: 'Get early access.', p3S: 'We’re opening the doors for 100 creators this week.',
+      p1Sub: 'AI coaching built to fix your hooks and dub your voice for a global audience.',
+      p2Title: 'Go global for the price of a <em>coffee.</em>',
+      p2Sub: 'Skip the $2,000/mo editor. Get a full AI strategy for $4.99/week.',
+      f1T: 'Viral Score (0-100)', f1S: 'Predict if your video flops before you post.',
+      p2Promo: 'Beta Access: $4.99', p2Limit: 'Limited to first 100 creators.',
+      p3T: 'Get early access.', p3S: 'Join the waitlist for the next batch of creators.',
       btn: 'JOIN BETA 🎯', sT: "You're on the list!", sS: 'Check your email. The jailbreak starts soon.',
       wait: 'Joining...', err: 'Error. Try again.'
     },
     ro: {
       p1Title: 'Scapă de închisoarea<br><em>celor 200 views.</em>',
-      p1Sub: 'Coaching de retenție cu AI. Îți reparăm hook-ul și îți dublăm vocea pentru o audiență globală.',
-      f1T: 'Viral Score (0-100)', f1S: 'Află dacă videoul tău moare înainte să-l postezi.',
-      f2T: 'Dublare Globală', f2S: 'Vocea ta în orice limbă. ElevenLabs integrat.',
+      p1Sub: 'Coaching AI creat să-ți repare hook-ul și să-ți dubleze vocea global.',
       p2Title: 'Devino global la<br>prețul unei <em>cafele.</em>',
-      p2Sub: 'Uită de editori de 2000$/lună. Strategie AI completă la 4.99$/săptămână.',
-      p2Promo: 'Beta Access: 4.99$ "Test Week"', p2Limit: 'Limitat la primii 100 de creatori.',
-      p3T: 'Cere acces timpuriu.', p3S: 'Deschidem porțile pentru 100 de creatori săptămâna asta.',
-      btn: 'INTRĂ ÎN BETA 🎯', sT: 'Ești pe listă!', sS: 'Verifică email-ul. Scăpăm de cele 200 de vizualizări curând.',
+      p2Sub: 'Uită de editori de 2000$/lună. Strategie AI la 4.99$/săptămână.',
+      f1T: 'Viral Score (0-100)', f1S: 'Află dacă videoul tău moare înainte să postezi.',
+      p2Promo: 'Beta Access: 4.99$', p2Limit: 'Limitat la primii 100 de creatori.',
+      p3T: 'Cere acces timpuriu.', p3S: 'Intră pe lista de așteptare pentru următoarea serie.',
+      btn: 'INTRĂ ÎN BETA 🎯', sT: 'Ești pe listă!', sS: 'Verifică email-ul. Scăpăm de cele 200 views curând.',
       wait: 'Se trimite...', err: 'Eroare. Încearcă din nou.'
     }
   };
 
   let currentLang = 'en';
+  function toggleLang() {
+    currentLang = currentLang === 'en' ? 'ro' : 'en';
+    document.querySelector('.lang-toggle').textContent = currentLang === 'en' ? '🇺🇸 EN' : '🇷🇴 RO';
+    applyLang(currentLang);
+  }
+
   function applyLang(lang) {
-    currentLang = lang;
-    const T = TRANSLATIONS[lang];
     document.querySelectorAll('[data-i18n]').forEach(el => {
       const key = el.dataset.i18n;
-      if (T[key]) el.innerHTML = T[key];
+      if (TRANSLATIONS[lang][key]) el.innerHTML = TRANSLATIONS[lang][key];
     });
-    document.getElementById('langFlag').textContent = lang === 'ro' ? '🇷🇴' : '🇺🇸';
-    document.getElementById('langCode').textContent = lang.toUpperCase();
   }
-  document.getElementById('langBtn').addEventListener('click', () => applyLang(currentLang === 'en' ? 'ro' : 'en'));
 
-  // SUPABASE
-  const SUPABASE_URL = 'https://uutxxjvwlnjviwqzazmy.supabase.co';
-  const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1dHh4anZ3bG5qdml3cXphem15Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNDU1NDUsImV4cCI6MjA5MTkyMTU0NX0.7bM2pQaO1ZCItvTIVyzKOHnZlUXrvdsK6Gpo96anaXc';
+  function scrollToPage(idx) {
+    const container = document.getElementById('mainContainer');
+    container.scrollTo({ top: window.innerHeight * idx, behavior: 'smooth' });
+  }
 
-  const joinBtn = document.getElementById('joinBtn');
-  joinBtn.addEventListener('click', async () => {
-    const email = document.getElementById('emailIn').value;
-    if(!email) return;
-    
-    joinBtn.disabled = true;
-    joinBtn.textContent = TRANSLATIONS[currentLang].wait;
-
-    try {
-      const res = await fetch(`${SUPABASE_URL}/rest/v1/waitlist`, {
-        method: 'POST',
-        headers: {
-          'apikey': SUPABASE_ANON,
-          'Authorization': `Bearer ${SUPABASE_ANON}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email })
-      });
-      if(res.ok) {
-        document.getElementById('formWrap').style.display = 'none';
-        document.getElementById('successWrap').classList.add('show');
-      }
-    } catch (e) {
-      document.getElementById('formStatus').textContent = TRANSLATIONS[currentLang].err;
-      joinBtn.disabled = false;
-    }
+  const container = document.getElementById('mainContainer');
+  const dots = document.querySelectorAll('.dot');
+  container.addEventListener('scroll', () => {
+    const idx = Math.round(container.scrollTop / window.innerHeight);
+    dots.forEach((d, i) => d.classList.toggle('active', i === idx));
   });
 
-  // NAV
-  let cur = 0;
-  const pages = document.querySelectorAll('.page');
-  const dots = document.querySelectorAll('.dot');
-  
-  function goTo(idx) {
-    if(idx < 0 || idx >= pages.length) return;
-    pages[cur].classList.remove('active');
-    pages[idx].classList.add('active');
-    dots[cur].classList.remove('active');
-    dots[idx].classList.add('active');
-    cur = idx;
-    const anims = pages[cur].quer
-    ySelectorAll('.anim');
-    anims.forEach(a => a.classList.add('in'));
-  }
-
-  document.getElementById('arrowBtn').addEventListener('click', () => goTo(cur + 1));
-  dots.forEach((d, i) => d.addEventListener('click', () => goTo(i)));
-  document.addEventListener('wheel', (e) => { if(e.deltaY > 0) goTo(cur+1); else goTo(cur-1); });
-
-  // CURSOR
-  const glow = document.getElementById('cursor-glow');
+  const glow = document.getElementById('glow');
   document.addEventListener('mousemove', e => {
     glow.style.left = e.clientX + 'px';
     glow.style.top = e.clientY + 'px';
   });
 
-  // INIT
+  // SUPABASE
+  const SUPABASE_URL = 'https://uutxxjvwlnjviwqzazmy.supabase.co';
+  const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1dHh4anZ3bG5qdml3cXphem15Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNDU1NDUsImV4cCI6MjA5MTkyMTU0NX0.7bM2pQaO1ZCItvTIVyzKOHnZlUXrvdsK6Gpo96anaXc';
+
+  document.getElementById('joinBtn').addEventListener('click', async () => {
+    const email = document.getElementById('emailIn').value;
+    const btn = document.getElementById('joinBtn');
+    if(!email.includes('@')) return;
+    
+    btn.disabled = true;
+    btn.textContent = TRANSLATIONS[currentLang].wait;
+
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/waitlist`, {
+        method: 'POST',
+        headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${SUPABASE_ANON}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      if(res.ok) {
+        document.getElementById('formWrap').style.display = 'none';
+        document.getElementById('successWrap').style.display = 'block';
+      }
+    } catch (e) {
+      document.getElementById('formStatus').textContent = TRANSLATIONS[currentLang].err;
+      btn.disabled = false;
+    }
+  });
+
   applyLang('en');
-  setTimeout(() => pages[0].querySelectorAll('.anim').forEach(a => a.classList.add('in')), 100);
 </script>
 </body>
 </html>
