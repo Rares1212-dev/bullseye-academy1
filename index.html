@@ -3,25 +3,26 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ViralBoost — Nu mai fi mediocru.</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700;900&display=swap" rel="stylesheet" />
+  <title>VIRALBOOST // ABSOLUTE DOMINATION</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;700;900&family=Space+Mono&display=swap" rel="stylesheet" />
   <style>
+    /* ── SYSTEM ARCHITECTURE ── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
       --accent: #8a2be2; 
-      --accent-glow: rgba(138, 43, 226, 0.4);
-      --bg: #050505;
-      --text: #ffffff;
-      --muted: #666;
+      --accent-bright: #b066ff;
+      --bg: #000;
+      --text: #fff;
+      --danger: #ff003c;
+      --card-bg: rgba(255,255,255,0.03);
     }
 
     body, html {
       width: 100%; height: 100%;
       background: var(--bg); color: var(--text);
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Space Grotesk', sans-serif;
       overflow: hidden;
+      cursor: crosshair;
     }
 
     .main-container {
@@ -37,217 +38,419 @@
       align-items: center; justify-content: center;
       position: relative;
       scroll-snap-align: start;
-      padding: 0 20px;
-      text-align: center;
+      padding: 0 10%;
+      overflow: hidden;
     }
 
-    /* ── ANIMAȚII AGRESIVE ── */
-    .reveal {
+    /* ── ADVANCED ANIMATION ENGINE ── */
+    .char {
+      display: inline-block;
       opacity: 0;
-      transform: scale(0.8) translateY(50px);
-      filter: blur(10px);
-      transition: all 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transform: translateY(150%) scaleY(2) skewY(20deg);
+      filter: blur(15px);
+      transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
     }
-    
-    .reveal.active {
+    .section-active .char {
       opacity: 1;
-      transform: scale(1) translateY(0);
+      transform: translateY(0) scaleY(1) skewY(0deg);
       filter: blur(0);
     }
 
-    .delay-1 { transition-delay: 0.2s; }
-    .delay-2 { transition-delay: 0.4s; }
-
-    /* UI */
-    .logo {
-      position: fixed; top: 30px; left: 30px;
-      font-size: 1.5rem; font-weight: 900; z-index: 1000;
-      letter-spacing: -1px;
+    .reveal-up {
+      opacity: 0;
+      transform: translateY(60px);
+      filter: grayscale(1);
+      transition: 1.2s cubic-bezier(0.19, 1, 0.22, 1);
     }
-    .logo span { color: var(--accent); }
-
-    .lang-toggle {
-      position: fixed; top: 30px; right: 30px;
-      z-index: 1000; background: #fff; color: #000;
-      border: none; padding: 10px 20px; border-radius: 5px; 
-      font-weight: 800; cursor: pointer; font-size: 0.8rem;
+    .section-active .reveal-up {
+      opacity: 1;
+      transform: translateY(0);
+      filter: grayscale(0);
     }
 
-    /* TYPOGRAPHY */
-    .hero-title {
-      font-size: clamp(3rem, 12vw, 7rem);
-      font-weight: 900; line-height: 0.85;
-      letter-spacing: -0.06em; margin-bottom: 25px;
+    /* ── UI OVERLAY ── */
+    .logo-fixed {
+      position: fixed; top: 40px; left: 40px; z-index: 1000;
+      font-family: 'Space Mono'; font-weight: 900; font-size: 1.2rem;
+      letter-spacing: -1px; mix-blend-mode: difference;
     }
-    .hero-title em { font-style: normal; color: var(--accent); text-shadow: 0 0 40px var(--accent-glow); }
     
-    .sub-text {
-      color: var(--muted); font-size: clamp(1rem, 2vw, 1.4rem);
-      max-width: 700px; line-height: 1.4; margin-bottom: 40px;
+    .status-bar {
+      position: fixed; bottom: 40px; right: 40px; z-index: 1000;
+      font-family: 'Space Mono'; font-size: 0.6rem; color: var(--accent);
+      text-align: right; pointer-events: none;
     }
 
-    .card {
-      background: #111; border: 1px solid #222;
-      padding: 30px; border-radius: 2px; text-align: left;
-      transition: 0.3s;
+    .lang-switcher {
+      position: fixed; top: 40px; right: 40px; z-index: 1000;
+      background: none; border: 1px solid var(--accent);
+      color: var(--text); padding: 8px 16px; font-family: 'Space Mono';
+      cursor: pointer; transition: 0.3s;
     }
-    .card:hover { border-color: var(--accent); transform: translateY(-5px); }
+    .lang-switcher:hover { background: var(--accent); }
 
-    .btn-main {
-      background: var(--accent); color: #fff; border: none;
-      padding: 20px 40px; font-weight: 900; font-size: 1.1rem;
-      cursor: pointer; text-transform: uppercase; letter-spacing: 1px;
-      box-shadow: 0 15px 30px var(--accent-glow);
+    /* ── ELEMENTS ── */
+    .hero-title {
+      font-size: clamp(4rem, 15vw, 12rem);
+      font-weight: 900; line-height: 0.75;
+      text-transform: uppercase; letter-spacing: -0.07em;
     }
+
+    .big-number {
+      font-size: 20rem; font-weight: 900; color: rgba(255,255,255,0.03);
+      position: absolute; z-index: -1; line-height: 1;
+    }
+
+    .glitch-text {
+      position: relative; color: var(--accent); font-family: 'Space Mono';
+      text-transform: uppercase; letter-spacing: 5px; font-size: 0.8rem;
+    }
+
+    .grid-bg {
+      position: absolute; inset: 0;
+      background-image: radial-gradient(var(--accent-glow) 1px, transparent 1px);
+      background-size: 40px 40px; z-index: -1; opacity: 0.5;
+    }
+
+    .info-card {
+      background: var(--card-bg); border: 1px solid rgba(255,255,255,0.1);
+      padding: 40px; width: 100%; max-width: 400px;
+      position: relative; overflow: hidden;
+    }
+    .info-card::before {
+      content: ""; position: absolute; top: 0; left: 0; width: 2px; height: 0;
+      background: var(--accent); transition: 0.5s;
+    }
+    .info-card:hover::before { height: 100%; }
 
     #glow {
-      position: fixed; width: 500px; height: 500px;
+      position: fixed; width: 800px; height: 800px;
       background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
-      pointer-events: none; transform: translate(-50%, -50%); z-index: 0;
+      pointer-events: none; z-index: 0; transform: translate(-50%, -50%);
+      transition: width 0.3s, height 0.3s;
     }
+
+    ::-webkit-scrollbar { width: 0; }
   </style>
 </head>
 <body>
 
 <div id="glow"></div>
-<div class="logo">VIRAL<span>BOOST</span></div>
-
-<button class="lang-toggle" onclick="toggleLang()">EN</button>
+<div class="logo-fixed">VB//SYS_01</div>
+<div class="status-bar" id="statusBar">SYSTEM_READY<br>LATENCY: 12ms<br>MARKET_ACCESS: GRANTED</div>
+<button class="lang-switcher" onclick="toggleLang()">EN</button>
 
 <div class="main-container" id="mainContainer">
   
-  <!-- PAGINA 1: PALMA PESTE FAȚĂ -->
+  <!-- SECTION 1: THE WAKEUP -->
   <section id="page0">
-    <h1 class="hero-title reveal" data-i18n="p1Title">200 VIEWS <br>IS A <em>CHOICE.</em></h1>
-    <p class="sub-text reveal delay-1" data-i18n="p1Sub">
-      Stop uploading garbage. We use AI to tear your hooks apart and force the algorithm to push your content globally.
+    <div class="grid-bg"></div>
+    <div class="glitch-text reveal-up">001 // INITIALIZING</div>
+    <h1 class="hero-title split" data-i18n="p1T">WAKE UP.</h1>
+    <p class="reveal-up delay-1" style="max-width: 600px; text-align: center; margin-top: 20px; font-family: 'Space Mono';" data-i18n="p1S">
+      The algorithm doesn't hate you. It just doesn't know you exist. Change that today.
     </p>
-    <div class="reveal delay-2" style="font-size: 0.8rem; letter-spacing: 2px; color: var(--accent); font-weight: 900;">SCROLL TO FACE REALITY</div>
   </section>
 
-  <!-- PAGINA 2: VALOARE BRUTĂ -->
-  <section id="page1" style="background: #080808;">
-    <div style="max-width: 1000px; width: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
-      <div class="reveal">
-        <h2 style="font-size: 3rem; font-weight: 900; line-height: 1; margin-bottom: 20px;" data-i18n="p2Title">GLOBAL OR <em>NOTHING.</em></h2>
-        <p style="color: var(--muted);" data-i18n="p2Sub">Your local market is too small for your ambition. One click, and you speak 15 languages in your own voice. No excuses.</p>
-      </div>
-      <div class="reveal delay-1 card">
-        <h3 style="color: var(--accent); margin-bottom: 10px;">PREDICTIVE VIRALITY</h3>
-        <p style="font-size: 0.9rem;" data-i18n="f1S">If our AI says your video will flop, it will. Fix it before you waste the post.</p>
+  <!-- SECTION 2: THE 200 VIEW PRISON -->
+  <section id="page1" style="background: #050505;">
+    <div class="big-number">200</div>
+    <div style="display: flex; flex-direction: column; align-items: flex-start; width: 100%;">
+      <h2 class="hero-title split" data-i18n="p2T">THE JAIL.</h2>
+      <div class="reveal-up delay-1 info-card" style="margin-top: 40px;">
+        <h3 style="color: var(--accent); margin-bottom: 10px;" data-i18n="p2CT">STAGNATION IS DEATH</h3>
+        <p style="font-size: 0.9rem; line-height: 1.6;" data-i18n="p2CS">You spend 5 hours editing for 200 people to ignore it. That ends here. We force engagement through AI-optimized psychological triggers.</p>
       </div>
     </div>
   </section>
 
-  <!-- PAGINA 3: ULTIMATUM -->
+  <!-- SECTION 3: NEURAL DUBBING -->
   <section id="page2">
-    <div id="formWrap" class="reveal">
-      <h2 style="font-size: 4rem; font-weight: 900; margin-bottom: 10px;" data-i18n="p3T">STOP <em>WAITING.</em></h2>
-      <p class="sub-text" data-i18n="p3S">Only 100 spots. We don't want everyone, we want the ones ready to dominate.</p>
-      <div style="display: flex; gap: 0; justify-content: center; flex-wrap: wrap;">
-        <input type="email" id="emailIn" placeholder="SHUT UP AND TAKE MY EMAIL" style="padding: 20px; width: 300px; border: none; outline: none; background: #111; color: #fff; font-weight: 700;">
-        <button class="btn-main" id="joinBtn" data-i18n="btn">GET ACCESS</button>
-      </div>
-    </div>
-    <div id="successWrap" style="display: none;">
-        <h2 style="font-size: 5rem;">👑</h2>
-        <h2 data-i18n="sT">YOU'RE IN.</h2>
-        <p data-i18n="sS">Don't waste this chance. Check your email.</p>
+    <div class="grid-bg" style="background-size: 100px 100px;"></div>
+    <h2 class="hero-title split" data-i18n="p3T">POLYGLOT.</h2>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; width: 100%; margin-top: 50px;">
+        <div class="info-card reveal-up delay-1">
+            <strong style="display:block; margin-bottom:10px;">LATAM</strong>
+            <p style="font-size: 0.8rem; opacity: 0.6;">600M+ POTENTIAL VIEWERS</p>
+        </div>
+        <div class="info-card reveal-up delay-2" style="border-color: var(--accent);">
+            <strong style="display:block; margin-bottom:10px;">USA / GLOBAL</strong>
+            <p style="font-size: 0.8rem; opacity: 0.6;">INFINITE AD REVENUE</p>
+        </div>
+        <div class="info-card reveal-up delay-3">
+            <strong style="display:block; margin-bottom:10px;">ASIA</strong>
+            <p style="font-size: 0.8rem; opacity: 0.6;">THE NEXT FRONTIER</p>
+        </div>
     </div>
   </section>
 
-</div>
+  <!-- SECTION 4: HOOK ANALYSIS -->
+  <section id="page3" style="background: #fff; color: #000;">
+    <h2 class="hero-title split" style="color: #000;" data-i18n="p4T">SURGERY.</h2>
+    <p class="reveal-up" style="color: #000; font-family: 'Space Mono'; font-weight: 700; margin-bottom: 40px;" data-i18n="p4S">WE DISSECT YOUR FIRST 3 SECONDS LIKE A LAB SPECIMEN.</p>
+    <div class="reveal-up" style="width: 100%; height: 2px; background: #000; transform-origin: left; animation: growLine 2s infinite;"></div>
+  </section>
+
+<!-- [CONTINUĂ ÎN JUMĂTATEA A DOUA...] -->
+  <!-- SECTION 5: THE COMPARISON (BRUTAL HONESTY) -->
+  <section id="page4" style="background: #080808;">
+    <div class="glitch-text reveal-up">002 // MARKET ANALYSIS</div>
+    <h2 class="hero-title split" data-i18n="p5T">THE COST.</h2>
+    
+    <div style="width: 100%; max-width: 1000px; margin-top: 50px;" class="reveal-up">
+      <table style="width: 100%; border-collapse: collapse; font-family: 'Space Mono'; font-size: 0.9rem;">
+        <tr style="border-bottom: 1px solid #222;">
+          <th style="padding: 20px; text-align: left; color: var(--muted);">FEATURE</th>
+          <th style="padding: 20px; text-align: center; color: var(--muted);">TRADITIONAL AGENCY</th>
+          <th style="padding: 20px; text-align: center; color: var(--accent);">VIRALBOOST AI</th>
+        </tr>
+        <tr style="border-bottom: 1px solid #222;">
+          <td style="padding: 20px;">DUBBING (15 LANGS)</td>
+          <td style="padding: 20px; text-align: center;">$2,500+ / mo</td>
+          <td style="padding: 20px; text-align: center; font-weight: 900;">INCLUDED</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #222;">
+          <td style="padding: 20px;">HOOK STRATEGY</td>
+          <td style="padding: 20px; text-align: center;">"GUESSWORK"</td>
+          <td style="padding: 20px; text-align: center; font-weight: 900;">NEURAL ANALYSIS</td>
+        </tr>
+        <tr style="border-bottom: 1px solid #222;">
+          <td style="padding: 20px;">TURNAROUND</td>
+          <td style="padding: 20px; text-align: center;">3-5 DAYS</td>
+          <td style="padding: 20px; text-align: center; font-weight: 900;">60 SECONDS</td>
+        </tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- SECTION 6: NEURAL NETWORK VISUAL -->
+  <section id="page5">
+    <div class="grid-bg" style="opacity: 0.2;"></div>
+    <div style="text-align: center;">
+        <h2 class="hero-title split" data-i18n="p6T">EVOLVE.</h2>
+        <div style="display: flex; justify-content: center; gap: 40px; margin-top: 40px;">
+            <div class="reveal-up info-card" style="text-align: center;">
+                <div style="font-size: 2rem; margin-bottom: 10px;">🧠</div>
+                <h4 data-i18n="p6f1">NEURAL CLONING</h4>
+                <p style="font-size: 0.7rem; opacity: 0.5; margin-top: 10px;">Your voice, perfectly synced in Spanish, German, or Japanese.</p>
+            </div>
+            <div class="reveal-up delay-1 info-card" style="text-align: center; border-color: var(--accent);">
+                <div style="font-size: 2rem; margin-bottom: 10px;">⚡</div>
+                <h4 data-i18n="p6f2">ALGO-BYPASS</h4>
+                <p style="font-size: 0.7rem; opacity: 0.5; margin-top: 10px;">Engineering the metrics that TikTok and Instagram crave.</p>
+            </div>
+        </div>
+    </div>
+  </section>
+
+  <!-- SECTION 7: THE BETA ULTIMATUM -->
+  <section id="page6" style="background: var(--accent); color: #fff;">
+    <div class="big-number" style="color: rgba(0,0,0,0.1);">BETA</div>
+    <h2 class="hero-title split" style="color: #000;" data-i18n="p7T">95% FULL.</h2>
+    <div class="reveal-up" style="max-width: 700px; text-align: center;">
+        <p style="font-size: 1.5rem; font-weight: 700; color: #000;" data-i18n="p7S">We are not a public tool. We are an elite engine for creators who treat content like a business.</p>
+        <div style="margin-top: 30px; padding: 15px; border: 2px solid #000; display: inline-block; font-family: 'Space Mono'; font-weight: 900; color: #000;">
+            CURRENT SLOTS AVAILABLE: 04 / 100
+        </div>
+    </div>
+  </section>
+
+  <!-- SECTION 8: GLOBAL HEATMAP -->
+  <section id="page7">
+    <div class="grid-bg"></div>
+    <div style="width: 100%; text-align: left;">
+        <h2 class="hero-title split" data-i18n="p8T">WORLDWIDE.</h2>
+        <div style="display: flex; gap: 100px; margin-top: 40px;" class="reveal-up">
+            <div>
+                <h5 style="color: var(--accent);">NORTH AMERICA</h5>
+                <p style="font-family: 'Space Mono'; font-size: 0.8rem;">CPM: $25.40</p>
+            </div>
+            <div>
+                <h5 style="color: var(--accent);">EUROPE</h5>
+                <p style="font-family: 'Space Mono'; font-size: 0.8rem;">CPM: $18.90</p>
+            </div>
+            <div>
+                <h5 style="color: var(--accent);">LATAM</h5>
+                <p style="font-family: 'Space Mono'; font-size: 0.8rem;">CPM: $12.10</p>
+            </div>
+        </div>
+        <p style="margin-top: 50px; opacity: 0.4; font-family: 'Space Mono'; font-size: 0.7rem;" data-i18n="p8S">
+            *Data reflects average monetization potential via ViralBoost localized streams.
+        </p>
+    </div>
+  </section>
+<!-- [FINALUL PARȚII 2/3 - CONTINUĂ CU PARTEA 3/3...] -->
+  <!-- SECTION 9: THE CONVERSION (THE GATE) -->
+  <section id="page8" style="background: #000;">
+    <div class="grid-bg"></div>
+    <div id="formWrap" class="reveal-up" style="text-align: center; width: 100%; max-width: 800px;">
+        <h2 class="hero-title split" data-i18n="p9T">DO NOT WAIT.</h2>
+        <p style="font-family: 'Space Mono'; color: var(--accent); margin-bottom: 50px;" data-i18n="p9S">SUBMIT YOUR IDENTITY TO JOIN THE WAITLIST.</p>
+        
+        <div style="display: flex; flex-direction: column; gap: 20px; align-items: center;">
+            <input type="email" id="emailIn" placeholder="CREATOR_EMAIL@PROT.ON" 
+                   style="width: 100%; max-width: 500px; padding: 25px; background: #080808; border: 1px solid #222; color: #fff; font-family: 'Space Mono'; font-size: 1.1rem; outline: none; text-align: center; transition: 0.3s;">
+            
+            <button class="btn-main" id="joinBtn" style="width: 100%; max-width: 500px; background: #fff; color: #000; border: none; padding: 25px; font-weight: 900; font-size: 1.2rem; cursor: pointer; text-transform: uppercase; letter-spacing: 2px;">
+                EXECUTE ACCESS
+            </button>
+        </div>
+        <p id="formStatus" style="margin-top: 20px; font-family: 'Space Mono'; font-size: 0.7rem; color: var(--danger);"></p>
+    </div>
+
+    <div id="successWrap" style="display:none; text-align: center;">
+        <h2 class="hero-title">ENROLLED.</h2>
+        <p class="glitch-text">CHECK YOUR INBOX FOR THE NEXT SEQUENCE.</p>
+    </div>
+  </section>
+
+  <!-- SECTION 10: FOOTER / SYSTEM TERMINAL -->
+  <section id="page9" style="height: 40vh; background: #000; border-top: 1px solid #111;">
+    <div style="width: 100%; display: flex; justify-content: space-between; align-items: flex-end; font-family: 'Space Mono'; font-size: 0.7rem; opacity: 0.4;">
+        <div>
+            <p>VIRALBOOST ENGINE v.1.0.4</p>
+            <p>© 2026 NO RIGHTS RESERVED. DOMINATE OR DIE.</p>
+        </div>
+        <div style="text-align: right;">
+            <p>ENCRYPTION: AES-256</p>
+            <p>LOCATION: GLOBAL_DISTRIBUTION</p>
+        </div>
+    </div>
+  </section>
+
+</div> <!-- End Main Container -->
 
 <script>
+  // ── CORE ANIMATION ENGINE ──
+  function initSplits() {
+    document.querySelectorAll('.split').forEach(t => {
+      const text = t.innerText;
+      t.innerHTML = '';
+      text.split('').forEach((char, i) => {
+        const span = document.createElement('span');
+        span.innerText = char === ' ' ? '\u00A0' : char;
+        span.className = 'char';
+        span.style.transitionDelay = `${i * 0.02}s`;
+        t.appendChild(span);
+      });
+    });
+  }
+
+  // ── TRANSLATION ARCHITECTURE ──
   const TRANSLATIONS = {
     en: {
-      p1Title: '200 VIEWS <br>IS A <em>CHOICE.</em>',
-      p1Sub: 'Stop uploading garbage. We use AI to tear your hooks apart and force the algorithm to push your content globally.',
-      p2Title: 'GLOBAL OR <em>NOTHING.</em>',
-      p2Sub: 'Your local market is too small for your ambition. One click, and you speak 15 languages in your own voice. No excuses.',
-      f1S: 'If our AI says your video will flop, it will. Fix it before you waste the post.',
-      p3T: 'STOP <em>WAITING.</em>',
-      p3S: "Only 100 spots. We don't want everyone, we want the ones ready to dominate.",
-      btn: 'GET ACCESS', sT: "YOU'RE IN.", sS: "Don't waste this chance. Check your email.",
-      wait: 'UPLOADING...', err: 'ERROR. AGAIN.'
+      p1T: 'WAKE UP.', p1S: 'The algorithm doesn’t hate you. It just doesn’t know you exist. Change that today.',
+      p2T: 'THE JAIL.', p2CT: 'STAGNATION IS DEATH', p2CS: 'You spend 5 hours editing for 200 people to ignore it. That ends here.',
+      p3T: 'POLYGLOT.', p4T: 'SURGERY.', p4S: 'WE DISSECT YOUR FIRST 3 SECONDS LIKE A LAB SPECIMEN.',
+      p5T: 'THE COST.', p6T: 'EVOLVE.', p7T: '95% FULL.', p7S: 'We are an elite engine for creators who treat content like a business.',
+      p8T: 'WORLDWIDE.', p8S: '*Data reflects average monetization potential via localized streams.',
+      p9T: 'DO NOT WAIT.', p9S: 'SUBMIT YOUR IDENTITY TO JOIN THE WAITLIST.',
+      btn: 'EXECUTE ACCESS', wait: 'PROCESSING...'
     },
     ro: {
-      p1Title: '200 VIEWS <br>E O <em>ALEGERE.</em>',
-      p1Sub: 'Nu mai urca mizerii. Folosim AI să-ți desființăm hook-ul și să forțăm algoritmul să te trimită global.',
-      p2Title: 'GLOBAL SAU <em>NIMIC.</em>',
-      p2Sub: 'Piața locală e prea mică pentru tine. Un singur click și vorbești 15 limbi cu vocea ta. Fără scuze.',
-      f1S: 'Dacă AI-ul nostru zice că videoul va muri, va muri. Repară-l înainte să-l postezi.',
-      p3T: 'NU MAI <em>AȘTEPTA.</em>',
-      p3S: 'Doar 100 de locuri. Nu îi vrem pe toți, îi vrem pe cei gata să domine.',
-      btn: 'VREAU ACCES', sT: 'EȘTI PE LISTĂ.', sS: 'Nu irosi șansa asta. Verifică mail-ul.',
-      wait: 'SE TRIMITE...', err: 'EROARE. REÎNCEARCĂ.'
+      p1T: 'TREZEȘTE-TE.', p1S: 'Algoritmul nu te urăște. Pur și simplu nu știe că exiști. Schimbă asta azi.',
+      p2T: 'ÎNCHISOAREA.', p2CT: 'STAGNAREA E MOARTE', p2CS: 'Pierzi 5 ore la editat ca 200 de oameni să te ignore. Aici se termină.',
+      p3T: 'POLIGLOT.', p4T: 'CHIRURGIE.', p4S: 'DISPONIBILIZĂM PRIMELE 3 SECUNDE CA PE UN SPECIMEN DE LABORATOR.',
+      p5T: 'COSTUL.', p6T: 'EVOLUEAZĂ.', p7T: '95% PLIN.', p7S: 'Suntem un motor de elită pentru creatorii care tratează conținutul ca pe o afacere.',
+      p8T: 'GLOBAL.', p8S: '*Datele reflectă potențialul mediu de monetizare prin stream-uri localizate.',
+      p9T: 'NU AȘTEPTA.', p9S: 'INTRODU-ȚI IDENTITATEA PENTRU A INTRA PE LISTĂ.',
+      btn: 'EXECUTĂ ACCESUL', wait: 'SE PROCESEAZĂ...'
     }
   };
 
   let currentLang = 'en';
   function toggleLang() {
     currentLang = currentLang === 'en' ? 'ro' : 'en';
-    document.querySelector('.lang-toggle').textContent = currentLang.toUpperCase();
+    document.querySelector('.lang-switcher').textContent = currentLang.toUpperCase();
     applyLang(currentLang);
   }
 
   function applyLang(lang) {
     document.querySelectorAll('[data-i18n]').forEach(el => {
       const key = el.dataset.i18n;
-      if (TRANSLATIONS[lang][key]) el.innerHTML = TRANSLATIONS[lang][key];
+      if (TRANSLATIONS[lang][key]) {
+          el.innerText = TRANSLATIONS[lang][key];
+          if (el.classList.contains('split')) initSplits();
+      }
     });
   }
 
-  // OBSERVER PENTRU ANIMAȚII (Aici e magia)
+  // ── SCROLL & REVEAL LOGIC ──
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
-      const elements = entry.target.querySelectorAll('.reveal');
       if (entry.isIntersecting) {
-        elements.forEach(el => el.classList.add('active'));
+        entry.target.classList.add('section-active');
+        updateStatus(entry.target.id);
       } else {
-        elements.forEach(el => el.classList.remove('active'));
+        entry.target.classList.remove('section-active');
       }
     });
-  }, { threshold: 0.3 });
+  }, { threshold: 0.4 });
 
   document.querySelectorAll('section').forEach(s => observer.observe(s));
 
-  // GLOW
+  function updateStatus(id) {
+    const status = document.getElementById('statusBar');
+    const latency = Math.floor(Math.random() * 20) + 5;
+    status.innerHTML = `SYSTEM_ACTIVE<br>SECTOR: ${id.toUpperCase()}<br>LATENCY: ${latency}ms`;
+  }
+
+  // ── INTERACTIVE ELEMENTS ──
   const glow = document.getElementById('glow');
   document.addEventListener('mousemove', e => {
     glow.style.left = e.clientX + 'px';
     glow.style.top = e.clientY + 'px';
   });
 
-  // SUPABASE
+  // ── DATABASE / SUPABASE ──
   const SUPABASE_URL = 'https://uutxxjvwlnjviwqzazmy.supabase.co';
   const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1dHh4anZ3bG5qdml3cXphem15Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNDU1NDUsImV4cCI6MjA5MTkyMTU0NX0.7bM2pQaO1ZCItvTIVyzKOHnZlUXrvdsK6Gpo96anaXc';
 
   document.getElementById('joinBtn').addEventListener('click', async () => {
     const email = document.getElementById('emailIn').value;
     const btn = document.getElementById('joinBtn');
-    if(!email.includes('@')) return;
+    const status = document.getElementById('formStatus');
+
+    if(!email.includes('@')) {
+        status.innerText = "INVALID_IDENTITY_FORMAT";
+        return;
+    }
     
     btn.disabled = true;
-    btn.textContent = TRANSLATIONS[currentLang].wait;
+    btn.innerText = TRANSLATIONS[currentLang].wait;
 
     try {
       const res = await fetch(`${SUPABASE_URL}/rest/v1/waitlist`, {
         method: 'POST',
-        headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${SUPABASE_ANON}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email })
+        headers: { 
+            'apikey': SUPABASE_ANON, 
+            'Authorization': `Bearer ${SUPABASE_ANON}`, 
+            'Content-Type': 'application/json',
+            'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({ email: email })
       });
+
       if(res.ok) {
         document.getElementById('formWrap').style.display = 'none';
         document.getElementById('successWrap').style.display = 'block';
+      } else {
+        throw new Error();
       }
     } catch (e) {
-      btn.textContent = TRANSLATIONS[currentLang].err;
       btn.disabled = false;
+      btn.innerText = "RETRY_EXECUTION";
+      status.innerText = "CONNECTION_ERROR_DETECTED";
     }
   });
 
-  applyLang('en');
+  // ── STARTUP ──
+  window.onload = () => {
+    initSplits();
+    applyLang('en');
+    console.log("VIRALBOOST // SYSTEM INITIALIZED");
+  };
 </script>
 </body>
 </html>
+  
