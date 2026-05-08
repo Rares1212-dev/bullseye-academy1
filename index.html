@@ -3,442 +3,145 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>VIRALBOOST — THE REVELATION</title>
+  <title>VIRALBOOST // RECOVERED</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@900&family=Space+Mono&display=swap" rel="stylesheet" />
   <style>
-    /* ── STEALH ARCHITECTURE ── */
+    /* ── RESET & BASE ── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --accent: #fff;
-      --bg: #000;
-      --muted: #444;
+    body { 
+      background: #000; color: #fff; 
+      font-family: 'Inter', sans-serif; 
+      overflow-x: hidden; 
     }
 
-    body, html {
-      width: 100%; height: 100%;
-      background: var(--bg); color: var(--accent);
-      font-family: 'Inter', -apple-system, sans-serif;
-      overflow: hidden;
+    /* ── CLEAN ANIMATIONS ── */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); filter: blur(10px); }
+      to { opacity: 1; transform: translateY(0); filter: blur(0); }
     }
 
-    /* ── CINEMATIC WRAPPER ── */
-    .viewport {
-      width: 100%; height: 100vh;
+    section {
+      min-height: 100vh; width: 100%;
       display: flex; flex-direction: column;
       align-items: center; justify-content: center;
+      padding: 0 5%; text-align: center;
       position: relative;
-      padding: 0 5%;
-      background: radial-gradient(circle at center, #111 0%, #000 100%);
     }
 
-    /* ── TEXT ENGINE ── */
+    /* ── TYPOGRAPHY ── */
     .hero-title {
-      font-size: clamp(4rem, 18vw, 15rem);
-      font-weight: 900;
-      line-height: 0.8;
-      letter-spacing: -0.08em;
+      font-size: clamp(3rem, 15vw, 10rem);
+      line-height: 0.8; letter-spacing: -0.07em;
       text-transform: uppercase;
-      text-align: center;
-      perspective: 1000px;
+      animation: fadeInUp 1.5s cubic-bezier(0.2, 1, 0.3, 1) forwards;
     }
 
-    .char {
-      display: inline-block;
-      opacity: 0;
-      transform: translateZ(-200px) scale(1.5);
-      filter: blur(20px);
-      transition: all 1.2s cubic-bezier(0.075, 0.82, 0.165, 1);
-    }
-    .char.active {
-      opacity: 1;
-      transform: translateZ(0) scale(1);
-      filter: blur(0);
-    }
-
-    .sub-title {
+    .sub-text {
       font-family: 'Space Mono', monospace;
-      font-size: clamp(0.8rem, 2vw, 1.2rem);
-      color: var(--muted);
-      margin-top: 40px;
-      text-transform: uppercase;
-      letter-spacing: 0.5em;
-      opacity: 0;
-      transform: translateY(20px);
-      transition: 2s 1s ease-out;
-    }
-    .sub-title.active {
-      opacity: 1;
-      transform: translateY(0);
+      color: #555; font-size: 0.8rem;
+      margin-top: 40px; letter-spacing: 4px;
+      opacity: 0; animation: fadeInUp 1.5s 0.5s forwards;
     }
 
-    /* ── INTERACTIVE ── */
-    .scroll-hint {
-      position: absolute; bottom: 40px;
-      font-family: 'Space Mono', monospace;
-      font-size: 0.7rem;
-      color: #222;
-      animation: pulse 2s infinite;
-    }
-    @keyframes pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
-
-    #glow {
-      position: absolute; width: 40vw; height: 40vw;
-      background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%);
-      pointer-events: none; z-index: 0; transform: translate(-50%, -50%);
-    }
-
-    /* ── BUTTONS ── */
-    .btn-next {
-      position: absolute; top: 40px; right: 40px;
-      background: #fff; color: #000; border: none;
-      padding: 12px 24px; font-weight: 900; font-size: 0.7rem;
-      text-transform: uppercase; letter-spacing: 2px;
-      cursor: pointer; transition: 0.3s; z-index: 10;
-    }
-    .btn-next:hover { letter-spacing: 4px; padding-right: 30px; }
-
-  </style>
-</head>
-<body>
-
-<div id="glow"></div>
-
-<div class="viewport">
-  <button class="btn-next">EXPLORE_SYSTEM</button>
-
-  <h1 class="hero-title" id="title">200.VIEWS.IS.A.CHOICE.</h1>
-  <p class="sub-title" id="subtitle">VIRALBOOST // NEURAL_ENGINE_2026</p>
-  
-  <div class="scroll-hint">INITIATE_SCROLL_SEQUENCE</div>
-</div>
-
-<script>
-  // CHARACTER SPLIT LOGIC
-  const title = document.getElementById('title');
-  const text = title.innerText;
-  title.innerHTML = '';
-
-  text.split('').forEach((char, i) => {
-    const span = document.createElement('span');
-    span.innerText = char === '.' ? '\u00A0' : char; // Replacing dots with spaces for the effect
-    span.className = 'char';
-    span.style.transitionDelay = `${i * 0.05}s`;
-    title.appendChild(span);
-  });
-
-  // TRIGGER ANIMATION ON LOAD
-  window.onload = () => {
-    document.querySelectorAll('.char').forEach(c => c.classList.add('active'));
-    document.getElementById('subtitle').classList.add('active');
-  };
-
-  // MOUSE GLOW
-  const glow = document.getElementById('glow');
-  document.addEventListener('mousemove', e => {
-    glow.style.left = e.clientX + 'px';
-    glow.style.top = e.clientY + 'px';
-  });
-
-  // BRUTAL ENDING FOR PAGE 1
-  document.querySelector('.btn-next').onclick = () => {
-    document.body.style.transition = '0.5s';
-    document.body.style.opacity = '0';
-    setTimeout(() => { alert("SYSTEM READY FOR PAGE 2"); }, 500);
-  };
-</script>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>VIRALBOOST — THE ENGINE</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;900&family=Space+Mono&display=swap" rel="stylesheet" />
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root { --accent: #fff; --bg: #000; --dim: #1a1a1a; --border: #333; }
-
-    body, html {
-      width: 100%; background: var(--bg); color: var(--accent);
-      font-family: 'Inter', sans-serif; overflow-x: hidden;
-    }
-
-    .container {
-      width: 100%; min-height: 100vh;
-      padding: 100px 5%; display: flex; flex-direction: column; align-items: center;
-    }
-
-    /* ── HEADER TECH ── */
-    .section-tag {
-      font-family: 'Space Mono', monospace; font-size: 0.7rem;
-      color: #666; letter-spacing: 5px; margin-bottom: 20px;
-      opacity: 0; transform: translateY(20px);
-    }
-
-    .main-text {
-      font-size: clamp(2rem, 8vw, 5rem); font-weight: 900;
-      letter-spacing: -0.05em; text-align: center; max-width: 900px;
-      line-height: 1; margin-bottom: 80px;
-    }
-
-    /* ── FEATURE GRID (APPLE STYLE) ── */
+    /* ── APPLE STYLE GRID ── */
     .grid {
       display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 1px; background: var(--border); width: 100%; max-width: 1200px;
-      border: 1px solid var(--border);
+      gap: 1px; background: #222; width: 100%; max-width: 1200px;
+      margin-top: 80px; border: 1px solid #222;
+      opacity: 0; animation: fadeInUp 1.5s 0.8s forwards;
     }
 
     .card {
-      background: var(--bg); padding: 60px 40px;
-      transition: 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-      position: relative; overflow: hidden;
-    }
-    .card:hover { background: #080808; }
-
-    .card-title {
-      font-family: 'Space Mono', monospace; font-size: 0.8rem;
-      margin-bottom: 15px; color: #888;
+      background: #000; padding: 60px; text-align: left;
     }
 
-    .card-desc {
-      font-size: 1.2rem; font-weight: 400; color: var(--accent);
-      line-height: 1.4;
-    }
-
-    /* ── ANIMATIONS ── */
-    .reveal { opacity: 0; transform: translateY(30px); transition: 1s ease-out; }
-    .reveal.active { opacity: 1; transform: translateY(0); }
-
-    .btn-next {
-      margin-top: 80px; background: none; border: 1px solid #444;
-      color: #fff; padding: 20px 40px; font-family: 'Space Mono';
-      cursor: pointer; transition: 0.3s;
-    }
-    .btn-next:hover { background: #fff; color: #000; border-color: #fff; }
-
-    /* ── BACKGROUND DATA STREAM ── */
-    #canvas {
-      position: fixed; top: 0; left: 0; z-index: -1; opacity: 0.1;
-    }
-  </style>
-</head>
-<body>
-
-<canvas id="canvas"></canvas>
-
-<div class="container">
-  <div class="section-tag reveal" id="tag">MODULE_02 // CAPABILITIES</div>
-  <h2 class="main-text reveal" id="mainHeader">WE DON'T EDIT.<br>WE ENGINEER FAME.</h2>
-
-  <div class="grid">
-    <div class="card reveal">
-      <div class="card-title">01 // NEURAL DUBBING</div>
-      <div class="card-desc">Your voice, cloned and localized in 15 markets. The same tone, the same emotion, a global audience.</div>
-    </div>
-    <div class="card reveal">
-      <div class="card-title">02 // ALGO-OPTIMIZER</div>
-      <div class="card-desc">AI analysis of the first 3 seconds. If they don't stop scrolling, we rebuild the hook from scratch.</div>
-    </div>
-    <div class="card reveal">
-      <div class="card-title">03 // MARKET INFILTRATION</div>
-      <div class="card-desc">Automated distribution across US, LATAM, and Asia. Maximum CPM, zero effort.</div>
-    </div>
-  </div>
-
-  <button class="btn-next reveal" onclick="location.href='#'">PROCEED_TO_ACCESS</button>
-</div>
-
-<script>
-  // REVEAL ON SCROLL
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) entry.target.classList.add('active');
-    });
-  }, { threshold: 0.1 });
-
-  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-  // DATA STREAM BACKGROUND
-  const canvas = document.getElementById('canvas');
-  const ctx = canvas.getContext('2d');
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-
-  const characters = '01';
-  const fontSize = 10;
-  const columns = canvas.width / fontSize;
-  const drops = Array(Math.floor(columns)).fill(1);
-
-  function draw() {
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = '#333';
-    ctx.font = fontSize + 'px monospace';
-    for (let i = 0; i < drops.length; i++) {
-      const text = characters.charAt(Math.floor(Math.random() * characters.length));
-      ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-      if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
-      drops[i]++;
-    }
-  }
-  setInterval(draw, 33);
-</script>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>VIRALBOOST — THE ACCESS</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;900&family=Space+Mono&display=swap" rel="stylesheet" />
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root { --accent: #fff; --bg: #000; --muted: #666; --danger: #ff3b30; }
-
-    body, html {
-      width: 100%; height: 100%;
-      background: var(--bg); color: var(--accent);
-      font-family: 'Inter', sans-serif;
-      overflow: hidden;
-    }
-
-    .viewport {
-      width: 100%; height: 100vh;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      padding: 0 5%;
-      position: relative;
-    }
-
-    /* ── THE GATEWAY UI ── */
-    .status-badge {
-      font-family: 'Space Mono', monospace; font-size: 0.7rem;
-      padding: 6px 12px; border: 1px solid #222;
-      border-radius: 100px; color: #888; margin-bottom: 30px;
-      opacity: 0; transform: translateY(-20px);
-    }
-
-    .main-title {
-      font-size: clamp(3rem, 10vw, 6rem); font-weight: 900;
-      letter-spacing: -0.06em; text-align: center; margin-bottom: 20px;
-    }
-
-    .desc {
-      font-family: 'Space Mono', monospace; font-size: 0.9rem;
-      color: var(--muted); text-align: center; max-width: 450px;
-      margin-bottom: 60px; line-height: 1.6;
-    }
-
-    /* ── MINIMAL FORM ── */
-    #formWrap {
+    /* ── FORM ── */
+    .input-field {
       width: 100%; max-width: 500px;
-      display: flex; flex-direction: column; gap: 20px;
-      opacity: 0; transform: scale(0.95);
-      transition: all 1s cubic-bezier(0.2, 1, 0.3, 1) 0.5s;
+      background: transparent; border: none;
+      border-bottom: 1px solid #333; color: #fff;
+      padding: 20px; font-size: 1.5rem; text-align: center;
+      outline: none; transition: 0.3s;
+    }
+    .input-field:focus { border-color: #fff; }
+
+    .btn {
+      margin-top: 30px; background: #fff; color: #000;
+      padding: 20px 60px; font-weight: 900; border: none;
+      cursor: pointer; text-transform: uppercase;
     }
 
-    input[type="email"] {
-      background: transparent; border: none; border-bottom: 1px solid #333;
-      padding: 20px 0; color: #fff; font-size: 1.5rem;
-      font-family: 'Inter', sans-serif; outline: none;
-      transition: border-color 0.4s; text-align: center;
-    }
-    input[type="email"]:focus { border-color: var(--accent); }
-
-    .btn-submit {
-      background: var(--accent); color: #000; border: none;
-      padding: 25px; font-weight: 900; font-size: 1rem;
-      text-transform: uppercase; letter-spacing: 3px;
-      cursor: pointer; transition: 0.3s; margin-top: 20px;
-    }
-    .btn-submit:hover { transform: scale(1.02); filter: invert(1); }
-
-    /* ── SUCCESS STATE ── */
-    #successWrap { display: none; text-align: center; }
-
-    /* ── ANIMATIONS ── */
-    .active { opacity: 1 !important; transform: none !important; }
-    
-    .bg-grid {
-      position: absolute; inset: 0;
-      background-image: linear-gradient(#111 1px, transparent 1px), 
-                        linear-gradient(90deg, #111 1px, transparent 1px);
-      background-size: 100px 100px; z-index: -1;
+    .bg-glow {
+      position: absolute; top: 50%; left: 50%;
+      width: 60vw; height: 60vw; background: radial-gradient(circle, #111 0%, transparent 70%);
+      transform: translate(-50%, -50%); z-index: -1;
     }
   </style>
 </head>
 <body>
 
-<div class="bg-grid"></div>
+  <!-- PAGE 1: IMPACT -->
+  <section>
+    <div class="bg-glow"></div>
+    <h1 class="hero-title">200.VIEWS.<br>IS.A.CHOICE.</h1>
+    <p class="sub-text">VIRALBOOST // NEURAL ENGINE 2026</p>
+  </section>
 
-<div class="viewport">
-  <div class="status-badge" id="badge">SYSTEM_LOADED // SLOTS: 04_LEFT</div>
-  
-  <h1 class="main-title active">END THE <br>STAGNATION.</h1>
-  <p class="desc active">The engine is ready. Enter your identity to begin the onboarding sequence.</p>
+  <!-- PAGE 2: TECH -->
+  <section style="background: #050505;">
+    <h1 class="hero-title" style="font-size: 5rem;">ENGINEERED.</h1>
+    <div class="grid">
+      <div class="card">
+        <p style="color: #666; font-family: 'Space Mono'; margin-bottom: 10px;">01 // DUBBING</p>
+        <p>Your voice in 15 languages. Perfectly synced.</p>
+      </div>
+      <div class="card">
+        <p style="color: #666; font-family: 'Space Mono'; margin-bottom: 10px;">02 // HOOKS</p>
+        <p>AI that rewrites your first 3 seconds for virality.</p>
+      </div>
+    </div>
+  </section>
 
-  <div id="formWrap">
-    <input type="email" id="email" placeholder="EMAIL_ADDRESS" required>
-    <button class="btn-submit" id="submitBtn">EXECUTE_START</button>
-    <p id="msg" style="font-family: 'Space Mono'; font-size: 0.7rem; text-align: center; margin-top: 10px; color: var(--muted);"></p>
-  </div>
-
-  <div id="successWrap">
-    <h1 class="main-title">INITIATED.</h1>
-    <p class="desc">The neural link is being established. Check your inbox within 5 minutes.</p>
-  </div>
-</div>
+  <!-- PAGE 3: ACCESS -->
+  <section>
+    <h1 class="hero-title" style="font-size: 4rem; margin-bottom: 40px;">GET_ACCESS.</h1>
+    <input type="email" id="email" class="input-field" placeholder="IDENTITY@EMAIL.COM">
+    <button class="btn" onclick="subscribe()">EXECUTE</button>
+    <p id="status" style="margin-top: 20px; font-family: 'Space Mono'; color: #444;"></p>
+  </section>
 
 <script>
-  // TRIGGER LOAD ANIMATION
-  window.onload = () => {
-    document.getElementById('badge').classList.add('active');
-    document.getElementById('formWrap').classList.add('active');
-  };
+  async function subscribe() {
+    const email = document.getElementById('email').value;
+    const status = document.getElementById('status');
+    const btn = document.querySelector('.btn');
 
-  // SUPABASE CONFIG
-  const SUPABASE_URL = 'https://uutxxjvwlnjviwqzazmy.supabase.co';
-  const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1dHh4anZ3bG5qdml3cXphem15Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNDU1NDUsImV4cCI6MjA5MTkyMTU0NX0.7bM2pQaO1ZCItvTIVyzKOHnZlUXrvdsK6Gpo96anaXc';
-
-  const btn = document.getElementById('submitBtn');
-  const input = document.getElementById('email');
-  const msg = document.getElementById('msg');
-
-  btn.onclick = async () => {
-    const email = input.value;
-    if (!email.includes('@')) {
-      msg.style.color = 'var(--danger)';
-      msg.innerText = "ERROR_INVALID_ID";
+    if(!email.includes('@')) {
+      status.innerText = "ERROR_INVALID_EMAIL";
       return;
     }
 
-    btn.disabled = true;
-    btn.innerText = "ESTABLISHING...";
-
+    btn.innerText = "WAITING...";
+    
     try {
-      const res = await fetch(`${SUPABASE_URL}/rest/v1/waitlist`, {
+      const res = await fetch('https://uutxxjvwlnjviwqzazmy.supabase.co/rest/v1/waitlist', {
         method: 'POST',
-        headers: { 
-          'apikey': SUPABASE_ANON, 
-          'Authorization': `Bearer ${SUPABASE_ANON}`, 
-          'Content-Type': 'application/json' 
+        headers: {
+          'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1dHh4anZ3bG5qdml3cXphem15Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNDU1NDUsImV4cCI6MjA5MTkyMTU0NX0.7bM2pQaO1ZCItvTIVyzKOHnZlUXrvdsK6Gpo96anaXc',
+          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1dHh4anZ3bG5qdml3cXphem15Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNDU1NDUsImV4cCI6MjA5MTkyMTU0NX0.7bM2pQaO1ZCItvTIVyzKOHnZlUXrvdsK6Gpo96anaXc',
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ email })
+        body: JSON.stringify({ email: email })
       });
 
-      if (res.ok) {
-        document.getElementById('formWrap').style.display = 'none';
-        document.querySelector('.main-title').style.display = 'none';
-        document.querySelector('.desc').style.display = 'none';
-        document.getElementById('successWrap').style.display = 'block';
+      if(res.ok) {
+        status.innerText = "SUCCESS_INITIATED";
+        btn.style.display = "none";
       }
     } catch (e) {
-      btn.disabled = false;
-      btn.innerText = "RETRY_EXECUTION";
+      status.innerText = "CONNECTION_ERROR";
     }
-  };
+  }
 </script>
 </body>
 </html>
