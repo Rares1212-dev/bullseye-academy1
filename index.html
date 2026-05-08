@@ -1,147 +1,279 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ro">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>VIRALBOOST // RECOVERED</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@900&family=Space+Mono&display=swap" rel="stylesheet" />
-  <style>
-    /* ── RESET & BASE ── */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { 
-      background: #000; color: #fff; 
-      font-family: 'Inter', sans-serif; 
-      overflow-x: hidden; 
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIRALBOOST // THE SYSTEM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@900&family=Space+Mono&display=swap" rel="stylesheet">
+    <style>
+        /* ── ROOT ARCHITECTURE ── */
+        :root {
+            --purp: #8a2be2;
+            --purp-glow: rgba(138, 43, 226, 0.4);
+            --bg: #000;
+            --text: #fff;
+            --circuit: rgba(138, 43, 226, 0.1);
+        }
 
-    /* ── CLEAN ANIMATIONS ── */
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(30px); filter: blur(10px); }
-      to { opacity: 1; transform: translateY(0); filter: blur(0); }
-    }
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: crosshair; }
 
-    section {
-      min-height: 100vh; width: 100%;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      padding: 0 5%; text-align: center;
-      position: relative;
-    }
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            scroll-snap-type: y mandatory;
+        }
 
-    /* ── TYPOGRAPHY ── */
-    .hero-title {
-      font-size: clamp(3rem, 15vw, 10rem);
-      line-height: 0.8; letter-spacing: -0.07em;
-      text-transform: uppercase;
-      animation: fadeInUp 1.5s cubic-bezier(0.2, 1, 0.3, 1) forwards;
-    }
+        /* ── DYNAMIC BACKGROUND ── */
+        .circuit-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: 
+                linear-gradient(var(--circuit) 1px, transparent 1px),
+                linear-gradient(90deg, var(--circuit) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -2; opacity: 0.5;
+        }
 
-    .sub-text {
-      font-family: 'Space Mono', monospace;
-      color: #555; font-size: 0.8rem;
-      margin-top: 40px; letter-spacing: 4px;
-      opacity: 0; animation: fadeInUp 1.5s 0.5s forwards;
-    }
+        .mouse-glow {
+            position: fixed; width: 600px; height: 600px;
+            background: radial-gradient(circle, var(--purp-glow) 0%, transparent 70%);
+            border-radius: 50%; pointer-events: none;
+            z-index: -1; transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s;
+        }
 
-    /* ── APPLE STYLE GRID ── */
-    .grid {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 1px; background: #222; width: 100%; max-width: 1200px;
-      margin-top: 80px; border: 1px solid #222;
-      opacity: 0; animation: fadeInUp 1.5s 0.8s forwards;
-    }
+        /* ── SECTION LOGIC ── */
+        section {
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            scroll-snap-align: start;
+            position: relative;
+            padding: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
 
-    .card {
-      background: #000; padding: 60px; text-align: left;
-    }
+        /* ── TYPOGRAPHY & ANIMATIONS ── */
+        .hero-text {
+            font-size: clamp(5rem, 18vw, 14rem);
+            line-height: 0.85;
+            font-weight: 900;
+            text-transform: uppercase;
+            text-align: center;
+            z-index: 2;
+            position: relative;
+        }
 
-    /* ── FORM ── */
-    .input-field {
-      width: 100%; max-width: 500px;
-      background: transparent; border: none;
-      border-bottom: 1px solid #333; color: #fff;
-      padding: 20px; font-size: 1.5rem; text-align: center;
-      outline: none; transition: 0.3s;
-    }
-    .input-field:focus { border-color: #fff; }
+        .outline-text {
+            -webkit-text-stroke: 2px var(--purp);
+            color: transparent;
+        }
 
-    .btn {
-      margin-top: 30px; background: #fff; color: #000;
-      padding: 20px 60px; font-weight: 900; border: none;
-      cursor: pointer; text-transform: uppercase;
-    }
+        .glitch-reveal {
+            animation: glitch 1s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+        }
 
-    .bg-glow {
-      position: absolute; top: 50%; left: 50%;
-      width: 60vw; height: 60vw; background: radial-gradient(circle, #111 0%, transparent 70%);
-      transform: translate(-50%, -50%); z-index: -1;
-    }
-  </style>
+        @keyframes glitch {
+            0% { opacity: 0; transform: translateY(50px) skewX(20deg); filter: blur(20px); }
+            100% { opacity: 1; transform: translateY(0) skewX(0); filter: blur(0); }
+        }
+
+        .sub-meta {
+            font-family: 'Space Mono', monospace;
+            color: var(--purp);
+            letter-spacing: 0.5em;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+
+        /* ── PAGE 2: THE PRICE ── */
+        .price-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .big-price {
+            font-size: 15vw;
+            color: var(--purp);
+            text-shadow: 0 0 80px var(--purp);
+            margin: 20px 0;
+            font-weight: 900;
+        }
+
+        /* ── PAGE 3: ACCESS ── */
+        .input-wrap {
+            width: 100%;
+            max-width: 600px;
+            position: relative;
+            margin-top: 50px;
+        }
+
+        input {
+            width: 100%;
+            background: rgba(255,255,255,0.03);
+            border: 2px solid var(--purp);
+            padding: 25px;
+            color: #fff;
+            font-family: 'Space Mono', monospace;
+            font-size: 1.2rem;
+            outline: none;
+            text-transform: uppercase;
+            box-shadow: 0 0 20px rgba(138, 43, 226, 0.2);
+            transition: 0.3s;
+        }
+
+        input:focus {
+            box-shadow: 0 0 50px var(--purp-glow);
+            background: rgba(138, 43, 226, 0.05);
+        }
+
+        .execute-btn {
+            width: 100%;
+            margin-top: 20px;
+            padding: 25px;
+            background: #fff;
+            color: #000;
+            border: none;
+            font-family: 'Inter', sans-serif;
+            font-weight: 900;
+            font-size: 1rem;
+            letter-spacing: 5px;
+            transition: 0.4s;
+        }
+
+        .execute-btn:hover {
+            background: var(--purp);
+            color: #fff;
+            box-shadow: 0 0 40px var(--purp);
+        }
+
+        /* ── SCROLLBAR ── */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: var(--purp); }
+
+        /* ── DECORATIVE ELEMENTS ── */
+        .corner-decor {
+            position: absolute; width: 100px; height: 100px;
+            border: 1px solid var(--purp); opacity: 0.3;
+        }
+        .top-left { top: 40px; left: 40px; border-right: none; border-bottom: none; }
+        .bottom-right { bottom: 40px; right: 40px; border-left: none; border-top: none; }
+
+    </style>
 </head>
 <body>
 
-  <!-- PAGE 1: IMPACT -->
-  <section>
-    <div class="bg-glow"></div>
-    <h1 class="hero-title">200.VIEWS.<br>IS.A.CHOICE.</h1>
-    <p class="sub-text">VIRALBOOST // NEURAL ENGINE 2026</p>
-  </section>
+    <div class="circuit-overlay"></div>
+    <div class="mouse-glow" id="cursor"></div>
 
-  <!-- PAGE 2: TECH -->
-  <section style="background: #050505;">
-    <h1 class="hero-title" style="font-size: 5rem;">ENGINEERED.</h1>
-    <div class="grid">
-      <div class="card">
-        <p style="color: #666; font-family: 'Space Mono'; margin-bottom: 10px;">01 // DUBBING</p>
-        <p>Your voice in 15 languages. Perfectly synced.</p>
-      </div>
-      <div class="card">
-        <p style="color: #666; font-family: 'Space Mono'; margin-bottom: 10px;">02 // HOOKS</p>
-        <p>AI that rewrites your first 3 seconds for virality.</p>
-      </div>
-    </div>
-  </section>
+    <!-- PAGE 1: THE REVELATION -->
+    <section>
+        <div class="corner-decor top-left"></div>
+        <div class="corner-decor bottom-right"></div>
+        
+        <h1 class="hero-text glitch-reveal">WAKE<br><span class="outline-text">UP.</span></h1>
+        <p class="sub-meta">THE ALGORITHM IS YOURS.</p>
+        
+        <div style="position: absolute; bottom: 50px; animation: bounce 2s infinite;">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1">
+                <path d="M7 13l5 5 5-5M7 6l5 5 5-5"/>
+            </svg>
+        </div>
+    </section>
 
-  <!-- PAGE 3: ACCESS -->
-  <section>
-    <h1 class="hero-title" style="font-size: 4rem; margin-bottom: 40px;">GET_ACCESS.</h1>
-    <input type="email" id="email" class="input-field" placeholder="IDENTITY@EMAIL.COM">
-    <button class="btn" onclick="subscribe()">EXECUTE</button>
-    <p id="status" style="margin-top: 20px; font-family: 'Space Mono'; color: #444;"></p>
-  </section>
+    <!-- PAGE 2: THE COST -->
+    <section>
+        <h1 class="hero-text" style="font-size: 6vw;">SYSTEM_VALUE</h1>
+        <div class="price-container">
+            <div class="big-price">$0/FREE</div>
+            <p class="sub-meta" style="color: #666;">BETA ACCESS ONLY.</p>
+        </div>
+        
+        <!-- Logic for Circuit Lines Simulation -->
+        <div style="width: 100%; height: 2px; background: linear-gradient(90deg, transparent, var(--purp), transparent); margin-top: 50px;"></div>
+    </section>
 
-<script>
-  async function subscribe() {
-    const email = document.getElementById('email').value;
-    const status = document.getElementById('status');
-    const btn = document.querySelector('.btn');
+    <!-- PAGE 3: ACCESS -->
+    <section>
+        <h1 class="hero-text">ASCEND.</h1>
+        <p class="sub-meta">IDENTITY VALIDATION REQUIRED</p>
+        
+        <div class="input-wrap">
+            <input type="email" id="userEmail" placeholder="INPUT_IDENTITY_HERE">
+            <button class="execute-btn" id="execBtn">EXECUTE_SYSTEM</button>
+        </div>
+        
+        <p id="responseMsg" style="margin-top: 20px; font-family: 'Space Mono'; color: #444; font-size: 0.7rem;"></p>
+    </section>
 
-    if(!email.includes('@')) {
-      status.innerText = "ERROR_INVALID_EMAIL";
-      return;
-    }
+    <script>
+        // MOUSE GLOW LOGIC (As seen in watermarked_img_4309344981815146581.png)
+        const cursor = document.getElementById('cursor');
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
 
-    btn.innerText = "WAITING...";
-    
-    try {
-      const res = await fetch('https://uutxxjvwlnjviwqzazmy.supabase.co/rest/v1/waitlist', {
-        method: 'POST',
-        headers: {
-          'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1dHh4anZ3bG5qdml3cXphem15Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNDU1NDUsImV4cCI6MjA5MTkyMTU0NX0.7bM2pQaO1ZCItvTIVyzKOHnZlUXrvdsK6Gpo96anaXc',
-          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1dHh4anZ3bG5qdml3cXphem15Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNDU1NDUsImV4cCI6MjA5MTkyMTU0NX0.7bM2pQaO1ZCItvTIVyzKOHnZlUXrvdsK6Gpo96anaXc',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email: email })
-      });
+        // SCROLL REVEAL LOGIC
+        const observerOptions = { threshold: 0.5 };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.querySelectorAll('.hero-text').forEach(el => {
+                        el.classList.add('glitch-reveal');
+                    });
+                }
+            });
+        }, observerOptions);
 
-      if(res.ok) {
-        status.innerText = "SUCCESS_INITIATED";
-        btn.style.display = "none";
-      }
-    } catch (e) {
-      status.innerText = "CONNECTION_ERROR";
-    }
-  }
-</script>
+        document.querySelectorAll('section').forEach(section => observer.observe(section));
+
+        // SUBMISSION ENGINE (Supabase Integration)
+        const btn = document.getElementById('execBtn');
+        const emailInput = document.getElementById('userEmail');
+        const msg = document.getElementById('responseMsg');
+
+        btn.addEventListener('click', async () => {
+            const email = emailInput.value;
+            if(!email.includes('@')) {
+                msg.innerText = ">> ERROR: INVALID_IDENTITY_FORMAT";
+                msg.style.color = "#ff3b30";
+                return;
+            }
+
+            btn.innerText = "ESTABLISHING_LINK...";
+            btn.disabled = true;
+
+            try {
+                const response = await fetch('https://uutxxjvwlnjviwqzazmy.supabase.co/rest/v1/waitlist', {
+                    method: 'POST',
+                    headers: {
+                        'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1dHh4anZ3bG5qdml3cXphem15Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNDU1NDUsImV4cCI6MjA5MTkyMTU0NX0.7bM2pQaO1ZCItvTIVyzKOHnZlUXrvdsK6Gpo96anaXc',
+                        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1dHh4anZ3bG5qdml3cXphem15Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNDU1NDUsImV4cCI6MjA5MTkyMTU0NX0.7bM2pQaO1ZCItvTIVyzKOHnZlUXrvdsK6Gpo96anaXc',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email: email })
+                });
+
+                if(response.ok) {
+                    msg.innerText = ">> SUCCESS: NEURAL_LINK_ESTABLISHED";
+                    msg.style.color = "#8a2be2";
+                    btn.innerText = "SYNCED";
+                }
+            } catch (error) {
+                msg.innerText = ">> CRITICAL_FAILURE: CONNECTION_LOST";
+                btn.disabled = false;
+                btn.innerText = "RETRY_EXECUTION";
+            }
+        });
+    </script>
 </body>
 </html>
