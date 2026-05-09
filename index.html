@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -472,7 +473,7 @@
       box-shadow: 0 0 20px rgba(0,229,255,0.5);
     }
 
-    /* PAGE 3 — OPTIMIZED FULL SCREEN */
+    /* PAGE 3 */
     .p3-container {
       width: 100%;
       display: flex; flex-direction: column;
@@ -731,12 +732,12 @@
       </p>
       <div class="badges-wrapper">
         <div class="promo-badge">
-          <div class="promo-text">First 100</div>
-          <div class="promo-sub">Lifetime promo price</div>
+          <div class="promo-text" id="promoText">First 100</div>
+          <div class="promo-sub" id="promoSub">Lifetime promo price</div>
         </div>
         <div class="spots-badge">
           <div class="spots-badge-num">30</div>
-          <div class="spots-badge-label">spots left</div>
+          <div class="spots-badge-label" id="spotsBadgeLabel">spots left</div>
         </div>
       </div>
     </div>
@@ -770,7 +771,7 @@
       <form class="pill-form" id="pillForm" onsubmit="handleSubmit(event)">
         <input type="email" class="pill-input" id="emailInput" placeholder="your@gmail.com" required>
         <div class="error-message" id="errorMsg"></div>
-        <button type="submit" class="cta-button">Get Early Access</button>
+        <button type="submit" class="cta-button" id="ctaBtn">Get Early Access</button>
       </form>
     </div>
   </div>
@@ -793,6 +794,19 @@
 </div>
 
 <script>
+// ==================== SUPABASE CONFIG ====================
+// INLOCUIESTE AICI CU CREDENTIALELE TALE:
+const SUPABASE_URL = 'https://uutxxjvwlnjviwqzazmy.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1dHh4anZ3bG5qdml3cXphem15Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNDU1NDUsImV4cCI6MjA5MTkyMTU0NX0.7bM2pQaO1ZCItvTIVyzKOHnZlUXrvdsK6Gpo96anaXc';
+
+let supabase = null;
+if (!SUPABASE_URL.includes('your-project') && SUPABASE_ANON_KEY !== 'your-anon-key') {
+  supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+} else {
+  console.warn('⚠️ Add your Supabase URL and anon key to activate the waitlist!');
+}
+// ========================================================
+
 const translations = {
   ro: {
     logoSub: 'antrenorul tău de viralitate',
@@ -800,8 +814,20 @@ const translations = {
     hl2: 'E O ALEGERE.',
     s1: 'Oprește-te din dat vina pe algoritm.',
     s2: 'Începe să îl infiltrezi. ViralBoost îți clonează vocea în <em>70+ de limbi</em> și detonează conținutul tău pe toate piețele — în timp ce dormi.',
+    promoText: 'Primii 100',
+    promoSub: 'Preț promotional pe viață',
+    spotsBadgeLabel: 'locuri libere',
+    priceTagline: 'Mergi viral cu prețul unei <span class="pulse-num">cafele</span> ☕',
+    priceSubtagline: 'Începând de la',
+    pricePeriod: '/lună',
+    spotsLabel: '30 de locuri libere',
+    p3eyebrow: 'Gata sa devi viral fara sa incerci?',
+    p3headline: 'Doar la un email distanta',
+    p3sub: 'Iti promitem ca noi iti facem toata treaba',
+    ctaBtn: 'Obtine Acces Devreme',
     modalText: 'Ești pe listă! Vei fi printre primii revoluționari ai viralității! 🚀',
     errorMsg: 'Trebuie să folosești un email Gmail (@gmail.com)',
+    modalBtn: 'Am înțeles!',
   },
   en: {
     logoSub: 'your virality coach',
@@ -809,19 +835,44 @@ const translations = {
     hl2: 'IS A CHOICE.',
     s1: 'Stop blaming the algorithm.',
     s2: 'Start infiltrating it. ViralBoost clones your voice in <em>70+ languages</em> and detonates your content across every market — while you sleep.',
+    promoText: 'First 100',
+    promoSub: 'Lifetime promo price',
+    spotsBadgeLabel: 'spots left',
+    priceTagline: 'Go viral for the price of a <span class="pulse-num">coffee</span> ☕',
+    priceSubtagline: 'Starting from',
+    pricePeriod: '/month',
+    spotsLabel: '30 spots left',
+    p3eyebrow: 'Ready to go viral without trying?',
+    p3headline: 'Just one email away',
+    p3sub: 'We promise we\'ll handle everything for you',
+    ctaBtn: 'Get Early Access',
     modalText: 'You\'re on the list! Check your email for the magic! 🚀',
     errorMsg: 'You must use a Gmail email (@gmail.com)',
+    modalBtn: 'Got it!',
   }
 };
 
-const originalHTML = {
-  priceTagline: document.querySelector('.price-tagline').innerHTML,
-  priceSubtagline: document.querySelector('.price-subtagline').innerHTML,
-  pricePeriod: document.querySelector('.price-period').innerHTML,
-  spotsLabel: document.querySelector('.spots-label').innerHTML,
-  p3eyebrow: document.getElementById('p3eyebrow').innerHTML,
-  p3headline: document.getElementById('p3headline').innerHTML,
-  p3sub: document.getElementById('p3sub').innerHTML,
+// Capturam referinte DOM
+const els = {
+  logoSub: document.getElementById('logoSub'),
+  hl1: document.getElementById('hl1'),
+  hl2: document.getElementById('hl2'),
+  s1: document.getElementById('s1'),
+  s2: document.getElementById('s2'),
+  promoText: document.getElementById('promoText'),
+  promoSub: document.getElementById('promoSub'),
+  spotsBadgeLabel: document.getElementById('spotsBadgeLabel'),
+  priceTagline: document.querySelector('.price-tagline'),
+  priceSubtagline: document.querySelector('.price-subtagline'),
+  pricePeriod: document.querySelector('.price-period'),
+  spotsLabel: document.querySelector('.spots-label'),
+  p3eyebrow: document.getElementById('p3eyebrow'),
+  p3headline: document.getElementById('p3headline'),
+  p3sub: document.getElementById('p3sub'),
+  ctaBtn: document.getElementById('ctaBtn'),
+  modalText: document.getElementById('modalText'),
+  modalBtn: document.querySelector('.modal-btn'),
+  errorMsg: document.getElementById('errorMsg'),
 };
 
 let lang = localStorage.getItem('vb_lang') || 'en';
@@ -830,27 +881,47 @@ function setLang(l) {
   lang = l;
   localStorage.setItem('vb_lang', l);
   const t = translations[l];
+  
   document.documentElement.lang = l;
   document.getElementById('lf').textContent = l === 'ro' ? '🇷🇴' : '🇺🇸';
   document.getElementById('lc').textContent = l.toUpperCase();
-  document.getElementById('logoSub').textContent = t.logoSub;
-  document.getElementById('hl1').textContent = t.hl1;
-  document.getElementById('hl2').textContent = t.hl2;
-  document.getElementById('s1').textContent = t.s1;
-  document.getElementById('s2').innerHTML = t.s2;
   
-  const p3eyebrow = document.getElementById('p3eyebrow');
-  const p3headline = document.getElementById('p3headline');
-  const p3sub = document.getElementById('p3sub');
+  // Pagina 0
+  els.logoSub.textContent = t.logoSub;
+  els.hl1.textContent = t.hl1;
+  els.hl2.textContent = t.hl2;
+  els.s1.textContent = t.s1;
+  els.s2.innerHTML = t.s2;
   
-  p3eyebrow.textContent = l === 'ro' ? 'Gata sa devi viral fara sa incerci?' : 'Ready to go viral without trying?';
-  p3headline.textContent = l === 'ro' ? 'Doar la un email distanta' : 'Just one email away';
-  p3sub.textContent = l === 'ro' ? 'Iti promitem ca noi iti facem toata treaba' : 'We promise we\'ll handle everything for you';
+  // Badge-uri
+  els.promoText.textContent = t.promoText;
+  els.promoSub.textContent = t.promoSub;
+  els.spotsBadgeLabel.textContent = t.spotsBadgeLabel;
   
-  originalHTML.p3eyebrow = p3eyebrow.innerHTML;
-  originalHTML.p3headline = p3headline.innerHTML;
-  originalHTML.p3sub = p3sub.innerHTML;
+  // Pagina 1
+  els.priceTagline.innerHTML = t.priceTagline;
+  els.priceSubtagline.textContent = t.priceSubtagline;
+  els.pricePeriod.textContent = t.pricePeriod;
+  els.spotsLabel.textContent = t.spotsLabel;
   
+  // Pagina 2
+  els.p3eyebrow.textContent = t.p3eyebrow;
+  els.p3headline.textContent = t.p3headline;
+  els.p3sub.textContent = t.p3sub;
+  els.ctaBtn.textContent = t.ctaBtn;
+  els.modalText.textContent = t.modalText;
+  els.modalBtn.textContent = t.modalBtn;
+  
+  // Actualizam originalHTML pentru re-animare corecta
+  originalHTML.priceTagline = t.priceTagline;
+  originalHTML.priceSubtagline = t.priceSubtagline;
+  originalHTML.pricePeriod = t.pricePeriod;
+  originalHTML.spotsLabel = t.spotsLabel;
+  originalHTML.p3eyebrow = t.p3eyebrow;
+  originalHTML.p3headline = t.p3headline;
+  originalHTML.p3sub = t.p3sub;
+  
+  if (currentPage === 1) animatePage1();
   if (currentPage === 2) animatePage2();
 }
 
@@ -858,7 +929,7 @@ document.getElementById('langBtn').addEventListener('click', () => {
   setLang(lang === 'ro' ? 'en' : 'ro');
 });
 
-function handleSubmit(e) {
+async function handleSubmit(e) {
   e.preventDefault();
   const email = document.getElementById('emailInput').value.trim();
   const errorMsg = document.getElementById('errorMsg');
@@ -870,6 +941,34 @@ function handleSubmit(e) {
   }
   
   errorMsg.classList.remove('show');
+  
+  // Trimite in Supabase
+  if (supabase) {
+    try {
+      const { error } = await supabase
+        .from('waitlist')
+        .insert([{ 
+          email: email, 
+          lang: lang,
+          created_at: new Date().toISOString() 
+        }]);
+      
+      if (error) {
+        console.error('Supabase error:', error);
+        errorMsg.textContent = lang === 'ro' ? 'Eroare la trimitere. Încearcă din nou.' : 'Something went wrong. Please try again.';
+        errorMsg.classList.add('show');
+        return;
+      }
+    } catch (err) {
+      console.error('Network error:', err);
+      errorMsg.textContent = lang === 'ro' ? 'Eroare de conexiune.' : 'Connection error.';
+      errorMsg.classList.add('show');
+      return;
+    }
+  } else {
+    console.log('Supabase not configured — email would be:', email);
+  }
+  
   showModal();
   document.getElementById('emailInput').value = '';
 }
@@ -877,12 +976,24 @@ function handleSubmit(e) {
 function showModal() {
   const modal = document.getElementById('successModal');
   document.getElementById('modalText').textContent = translations[lang].modalText;
+  document.querySelector('.modal-btn').textContent = translations[lang].modalBtn;
   modal.classList.add('show');
 }
 
 function closeModal() {
   document.getElementById('successModal').classList.remove('show');
 }
+
+// Salvam originalHTML pentru re-animare
+const originalHTML = {
+  priceTagline: els.priceTagline.innerHTML,
+  priceSubtagline: els.priceSubtagline.innerHTML,
+  pricePeriod: els.pricePeriod.innerHTML,
+  spotsLabel: els.spotsLabel.innerHTML,
+  p3eyebrow: els.p3eyebrow.innerHTML,
+  p3headline: els.p3headline.innerHTML,
+  p3sub: els.p3sub.innerHTML,
+};
 
 function wrapLetters(element, baseDelay = 0, stagger = 0.03) {
   let charIndex = 0;
@@ -983,7 +1094,7 @@ function animatePage1() {
   
   price.style.opacity = '0';
   setTimeout(() => {
-    price.textContent = '0.00';
+    price.textContent = lang === 'ro' ? '0,00' : '0.00';
     price.style.opacity = '1';
     countUp(price, 0, 4.99, 800);
   }, 700);
@@ -1023,7 +1134,8 @@ function countUp(el, start, end, duration) {
     const progress = Math.min((now - startTime) / duration, 1);
     const ease = 1 - Math.pow(1 - progress, 3);
     const val = start + (end - start) * ease;
-    el.textContent = val.toFixed(2);
+    const formatted = val.toFixed(2);
+    el.textContent = lang === 'ro' ? formatted.replace('.', ',') : formatted;
     if (progress < 1) requestAnimationFrame(step);
   }
   requestAnimationFrame(step);
@@ -1066,6 +1178,7 @@ document.querySelectorAll('button, .dot, .cta-button, .pill-input, .lang-btn, .a
   el.addEventListener('mouseleave', () => hand.classList.remove('big'));
 });
 
+// INIT
 setLang(lang);
 animatePage0();
 </script>
