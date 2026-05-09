@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" async></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -217,7 +217,7 @@
       animation: letterIn 0.55s cubic-bezier(0.16,1,0.3,1) forwards;
     }
 
-    /* PAGE 1 */
+    /* ═══════ PAGE 1 — 100% CSS animations ═══════ */
     .p1-container { width: 100%; max-width: 700px; display: flex; flex-direction: column; align-items: center; gap: 1.2rem; position: relative; }
 
     .headline { text-align: center; margin-bottom: 8px; }
@@ -261,6 +261,20 @@
     @keyframes blurIn {
       from { opacity:0; transform:translateY(22px); filter:blur(10px); }
       to   { opacity:1; transform:translateY(0); filter:blur(0); }
+    }
+
+    /* Animațiile pornesc automat când pagina e activă — FĂRĂ JS */
+    .page.active #hl1 {
+      animation: slideUp 1s cubic-bezier(0.16,1,0.3,1) forwards;
+      animation-delay: 0.2s;
+    }
+    .page.active #hl2 {
+      animation: slideUp 1s cubic-bezier(0.16,1,0.3,1) forwards;
+      animation-delay: 0.5s;
+    }
+    .page.active #p1sub {
+      animation: blurIn 1.2s cubic-bezier(0.16,1,0.3,1) forwards;
+      animation-delay: 1s;
     }
 
     .badges-wrapper {
@@ -339,7 +353,7 @@
       font-weight: 600;
     }
 
-    /* PAGE 2 */
+    /* ═══════ PAGE 2 ═══════ */
     .p2-container {
       width: 100%;
       height: 100%;
@@ -409,8 +423,11 @@
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
       background-clip: text;
       font-weight: 800;
-      animation: slideInPrice 0.8s cubic-bezier(0.16,1,0.3,1) forwards;
       opacity: 0;
+    }
+    .page.active .price-symbol {
+      animation: slideInPrice 0.8s cubic-bezier(0.16,1,0.3,1) forwards;
+      animation-delay: 0.5s;
     }
 
     .price-number {
@@ -446,6 +463,10 @@
       gap: 1rem;
       opacity: 0;
     }
+    .page.active .spots-container {
+      animation: blurIn 1s cubic-bezier(0.16,1,0.3,1) forwards;
+      animation-delay: 2.2s;
+    }
 
     .spots-label {
       font-family: var(--font-m);
@@ -473,7 +494,7 @@
       box-shadow: 0 0 20px rgba(0,229,255,0.5);
     }
 
-    /* PAGE 3 */
+    /* ═══════ PAGE 3 ═══════ */
     .p3-container {
       width: 100%;
       display: flex; flex-direction: column;
@@ -531,6 +552,10 @@
       gap: 0.8rem;
       margin-top: 0.5rem;
       opacity: 0;
+    }
+    .page.active .pill-form {
+      animation: blurIn 1s cubic-bezier(0.16,1,0.3,1) forwards;
+      animation-delay: 1.8s;
     }
 
     .pill-input {
@@ -794,19 +819,34 @@
 </div>
 
 <script>
-// ==================== SUPABASE CONFIG ====================
-// INLOCUIESTE AICI CU CREDENTIALELE TALE:
+// ═══════════════════════════════════════════════════════
+//  SUPABASE — PUNE CHEILE TALE AICI (liniile 14-15)
+// ═══════════════════════════════════════════════════════
 const SUPABASE_URL = 'https://uutxxjvwlnjviwqzazmy.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1dHh4anZ3bG5qdml3cXphem15Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNDU1NDUsImV4cCI6MjA5MTkyMTU0NX0.7bM2pQaO1ZCItvTIVyzKOHnZlUXrvdsK6Gpo96anaXc';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1dHh4anZ3bG5qdml3cXphem15Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNDU1NDUsImV4cCI6MjA5MTkyMTU0NX0.7bM2pQaO1ZCItvTIVyzKOHnZlUXrvdsK6Gpo96anaXc';
 
 let supabase = null;
-if (!SUPABASE_URL.includes('your-project') && SUPABASE_ANON_KEY !== 'your-anon-key') {
-  supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-} else {
-  console.warn('⚠️ Add your Supabase URL and anon key to activate the waitlist!');
+try {
+  if (
+    SUPABASE_URL && SUPABASE_KEY &&
+    !SUPABASE_URL.includes('your-project') &&
+    SUPABASE_KEY !== 'your-anon-key' &&
+    typeof window !== 'undefined' &&
+    window.supabase &&
+    typeof window.supabase.createClient === 'function'
+  ) {
+    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    console.log('✅ Supabase connected');
+  } else {
+    console.warn('⚠️ Supabase not configured — running offline');
+  }
+} catch (err) {
+  console.error('❌ Supabase init error:', err);
 }
-// ========================================================
 
+// ═══════════════════════════════════════════════════════
+//  TRANSLATIONS
+// ═══════════════════════════════════════════════════════
 const translations = {
   ro: {
     logoSub: 'antrenorul tău de viralitate',
@@ -852,7 +892,9 @@ const translations = {
   }
 };
 
-// Capturam referinte DOM
+// ═══════════════════════════════════════════════════════
+//  DOM REFS
+// ═══════════════════════════════════════════════════════
 const els = {
   logoSub: document.getElementById('logoSub'),
   hl1: document.getElementById('hl1'),
@@ -875,8 +917,28 @@ const els = {
   errorMsg: document.getElementById('errorMsg'),
 };
 
-let lang = localStorage.getItem('vb_lang') || 'en';
+// Salvam textele originale pentru re-animare
+const originals = {
+  priceTagline: els.priceTagline.innerHTML,
+  priceSubtagline: els.priceSubtagline.textContent,
+  pricePeriod: els.pricePeriod.textContent,
+  spotsLabel: els.spotsLabel.textContent,
+  p3eyebrow: els.p3eyebrow.textContent,
+  p3headline: els.p3headline.textContent,
+  p3sub: els.p3sub.textContent,
+};
 
+// ═══════════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════════
+let lang = localStorage.getItem('vb_lang') || 'en';
+let currentPage = 0;
+let isTransitioning = false;
+const PAGES = ['page0', 'page1', 'page2'];
+
+// ═══════════════════════════════════════════════════════
+//  FUNCTIONS
+// ═══════════════════════════════════════════════════════
 function setLang(l) {
   lang = l;
   localStorage.setItem('vb_lang', l);
@@ -912,22 +974,15 @@ function setLang(l) {
   els.modalText.textContent = t.modalText;
   els.modalBtn.textContent = t.modalBtn;
   
-  // Actualizam originalHTML pentru re-animare corecta
-  originalHTML.priceTagline = t.priceTagline;
-  originalHTML.priceSubtagline = t.priceSubtagline;
-  originalHTML.pricePeriod = t.pricePeriod;
-  originalHTML.spotsLabel = t.spotsLabel;
-  originalHTML.p3eyebrow = t.p3eyebrow;
-  originalHTML.p3headline = t.p3headline;
-  originalHTML.p3sub = t.p3sub;
-  
-  if (currentPage === 1) animatePage1();
-  if (currentPage === 2) animatePage2();
+  // Update originals pentru re-animare corecta
+  originals.priceTagline = t.priceTagline;
+  originals.priceSubtagline = t.priceSubtagline;
+  originals.pricePeriod = t.pricePeriod;
+  originals.spotsLabel = t.spotsLabel;
+  originals.p3eyebrow = t.p3eyebrow;
+  originals.p3headline = t.p3headline;
+  originals.p3sub = t.p3sub;
 }
-
-document.getElementById('langBtn').addEventListener('click', () => {
-  setLang(lang === 'ro' ? 'en' : 'ro');
-});
 
 async function handleSubmit(e) {
   e.preventDefault();
@@ -942,16 +997,11 @@ async function handleSubmit(e) {
   
   errorMsg.classList.remove('show');
   
-  // Trimite in Supabase
   if (supabase) {
     try {
       const { error } = await supabase
         .from('waitlist')
-        .insert([{ 
-          email: email, 
-          lang: lang,
-          created_at: new Date().toISOString() 
-        }]);
+        .insert([{ email: email, lang: lang, created_at: new Date().toISOString() }]);
       
       if (error) {
         console.error('Supabase error:', error);
@@ -966,7 +1016,7 @@ async function handleSubmit(e) {
       return;
     }
   } else {
-    console.log('Supabase not configured — email would be:', email);
+    console.log('Supabase offline — email:', email);
   }
   
   showModal();
@@ -974,29 +1024,19 @@ async function handleSubmit(e) {
 }
 
 function showModal() {
-  const modal = document.getElementById('successModal');
   document.getElementById('modalText').textContent = translations[lang].modalText;
   document.querySelector('.modal-btn').textContent = translations[lang].modalBtn;
-  modal.classList.add('show');
+  document.getElementById('successModal').classList.add('show');
 }
 
 function closeModal() {
   document.getElementById('successModal').classList.remove('show');
 }
 
-// Salvam originalHTML pentru re-animare
-const originalHTML = {
-  priceTagline: els.priceTagline.innerHTML,
-  priceSubtagline: els.priceSubtagline.innerHTML,
-  pricePeriod: els.pricePeriod.innerHTML,
-  spotsLabel: els.spotsLabel.innerHTML,
-  p3eyebrow: els.p3eyebrow.innerHTML,
-  p3headline: els.p3headline.innerHTML,
-  p3sub: els.p3sub.innerHTML,
-};
-
-function wrapLetters(element, baseDelay = 0, stagger = 0.03) {
+function wrapLetters(element, baseDelay, stagger) {
   let charIndex = 0;
+  baseDelay = baseDelay || 0;
+  stagger = stagger || 0.03;
   
   function process(node) {
     if (node.nodeType === Node.TEXT_NODE) {
@@ -1015,55 +1055,24 @@ function wrapLetters(element, baseDelay = 0, stagger = 0.03) {
       Array.from(node.childNodes).forEach(child => process(child));
     }
   }
-  
   Array.from(element.childNodes).forEach(child => process(child));
 }
-
-const PAGES = ['page0', 'page1', 'page2'];
-let currentPage = 0, isTransitioning = false;
 
 function goToPage(idx) {
   if (idx === currentPage || isTransitioning || idx < 0 || idx >= PAGES.length) return;
   isTransitioning = true;
   
-  const old = document.getElementById(PAGES[currentPage]);
-  const nxt = document.getElementById(PAGES[idx]);
-  
-  old.classList.remove('active');
-  nxt.classList.add('active');
+  document.getElementById(PAGES[currentPage]).classList.remove('active');
+  document.getElementById(PAGES[idx]).classList.add('active');
   currentPage = idx;
   
-  document.querySelectorAll('.dot').forEach((d, i) => {
-    d.classList.toggle('active', i === idx);
-  });
-  
+  document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === idx));
   document.getElementById('arrowBtn').classList.toggle('hidden', idx === PAGES.length - 1);
   
-  if (idx === 0) animatePage0();
   if (idx === 1) animatePage1();
   if (idx === 2) animatePage2();
   
   setTimeout(() => { isTransitioning = false; }, 500);
-}
-
-function animatePage0() {
-  const hl1 = document.getElementById('hl1');
-  const hl2 = document.getElementById('hl2');
-  const p1sub = document.getElementById('p1sub');
-  
-  [hl1, hl2, p1sub].forEach(el => {
-    el.style.animation = 'none';
-    void el.offsetHeight;
-  });
-  
-  hl1.style.animation = 'slideUp 1s cubic-bezier(0.16,1,0.3,1) forwards';
-  hl1.style.animationDelay = '0.2s';
-  
-  hl2.style.animation = 'slideUp 1s cubic-bezier(0.16,1,0.3,1) forwards';
-  hl2.style.animationDelay = '0.5s';
-  
-  p1sub.style.animation = 'blurIn 1.2s cubic-bezier(0.16,1,0.3,1) forwards';
-  p1sub.style.animationDelay = '1s';
 }
 
 function animatePage1() {
@@ -1072,59 +1081,37 @@ function animatePage1() {
   const period = document.querySelector('.price-period');
   const spotsLabel = document.querySelector('.spots-label');
   
-  tagline.innerHTML = originalHTML.priceTagline;
-  subtagline.innerHTML = originalHTML.priceSubtagline;
-  period.innerHTML = originalHTML.pricePeriod;
-  spotsLabel.innerHTML = originalHTML.spotsLabel;
+  tagline.innerHTML = originals.priceTagline;
+  subtagline.textContent = originals.priceSubtagline;
+  period.textContent = originals.pricePeriod;
+  spotsLabel.textContent = originals.spotsLabel;
   
   wrapLetters(tagline, 0.2, 0.03);
   wrapLetters(subtagline, 0.8, 0.03);
   wrapLetters(period, 1.4, 0.03);
   wrapLetters(spotsLabel, 1.8, 0.03);
   
-  const symbol = document.getElementById('priceSymbol');
   const price = document.getElementById('priceCount');
-  const spotsContainer = document.querySelector('.spots-container');
-  
-  symbol.style.opacity = '0';
-  symbol.style.animation = 'none';
-  void symbol.offsetHeight;
-  symbol.style.animation = 'slideInPrice 0.8s cubic-bezier(0.16,1,0.3,1) forwards';
-  symbol.style.animationDelay = '0.5s';
-  
   price.style.opacity = '0';
   setTimeout(() => {
     price.textContent = lang === 'ro' ? '0,00' : '0.00';
     price.style.opacity = '1';
     countUp(price, 0, 4.99, 800);
   }, 700);
-  
-  spotsContainer.style.opacity = '0';
-  spotsContainer.style.animation = 'none';
-  void spotsContainer.offsetHeight;
-  spotsContainer.style.animation = 'blurIn 1s cubic-bezier(0.16,1,0.3,1) forwards';
-  spotsContainer.style.animationDelay = '2.2s';
 }
 
 function animatePage2() {
   const eyebrow = document.getElementById('p3eyebrow');
   const headline = document.getElementById('p3headline');
   const sub = document.getElementById('p3sub');
-  const form = document.getElementById('pillForm');
   
-  eyebrow.innerHTML = originalHTML.p3eyebrow;
-  headline.innerHTML = originalHTML.p3headline;
-  sub.innerHTML = originalHTML.p3sub;
+  eyebrow.textContent = originals.p3eyebrow;
+  headline.textContent = originals.p3headline;
+  sub.textContent = originals.p3sub;
   
   wrapLetters(eyebrow, 0.2, 0.04);
   wrapLetters(headline, 0.6, 0.05);
   wrapLetters(sub, 1.2, 0.03);
-  
-  form.style.opacity = '0';
-  form.style.animation = 'none';
-  void form.offsetHeight;
-  form.style.animation = 'blurIn 1s cubic-bezier(0.16,1,0.3,1) forwards';
-  form.style.animationDelay = '1.8s';
 }
 
 function countUp(el, start, end, duration) {
@@ -1141,7 +1128,13 @@ function countUp(el, start, end, duration) {
   requestAnimationFrame(step);
 }
 
+// ═══════════════════════════════════════════════════════
+//  EVENT LISTENERS
+// ═══════════════════════════════════════════════════════
+document.getElementById('langBtn').addEventListener('click', () => setLang(lang === 'ro' ? 'en' : 'ro'));
+
 document.getElementById('arrowBtn').addEventListener('click', () => goToPage(currentPage + 1));
+
 document.querySelectorAll('.dot').forEach(d => {
   d.addEventListener('click', () => goToPage(+d.dataset.page));
 });
@@ -1165,12 +1158,9 @@ const cg1 = document.getElementById('cg1');
 const cg2 = document.getElementById('cg2');
 
 document.addEventListener('mousemove', (e) => {
-  hand.style.left = e.clientX + 'px';
-  hand.style.top = e.clientY + 'px';
-  cg1.style.left = e.clientX + 'px';
-  cg1.style.top = e.clientY + 'px';
-  cg2.style.left = e.clientX + 'px';
-  cg2.style.top = e.clientY + 'px';
+  hand.style.left = e.clientX + 'px'; hand.style.top = e.clientY + 'px';
+  cg1.style.left = e.clientX + 'px'; cg1.style.top = e.clientY + 'px';
+  cg2.style.left = e.clientX + 'px'; cg2.style.top = e.clientY + 'px';
 });
 
 document.querySelectorAll('button, .dot, .cta-button, .pill-input, .lang-btn, .arrow-btn').forEach(el => {
@@ -1178,9 +1168,10 @@ document.querySelectorAll('button, .dot, .cta-button, .pill-input, .lang-btn, .a
   el.addEventListener('mouseleave', () => hand.classList.remove('big'));
 });
 
-// INIT
+// ═══════════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════════
 setLang(lang);
-animatePage0();
 </script>
 </body>
 </html>
