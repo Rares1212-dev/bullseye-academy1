@@ -217,7 +217,7 @@
       animation: letterIn 0.55s cubic-bezier(0.16,1,0.3,1) forwards;
     }
 
-    /* PAGE 1 — CSS animations */
+    /* PAGE 1 */
     .p1-container { width: 100%; max-width: 700px; display: flex; flex-direction: column; align-items: center; gap: 1.2rem; position: relative; }
 
     .headline { text-align: center; margin-bottom: 8px; }
@@ -818,7 +818,7 @@
 
 <script>
 // ═══════════════════════════════════════════════════════
-//  SUPABASE — PUNE CHEILE TALE AICI (liniile 14-15)
+//  SUPABASE — PUNE CHEILE TALE AICI
 // ═══════════════════════════════════════════════════════
 const SUPABASE_URL = 'https://uutxxjvwlnjviwqzazmy.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1dHh4anZ3bG5qdml3cXphem15Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNDU1NDUsImV4cCI6MjA5MTkyMTU0NX0.7bM2pQaO1ZCItvTIVyzKOHnZlUXrvdsK6Gpo96anaXc';
@@ -982,19 +982,22 @@ async function handleSubmit(e) {
   
   if (sbClient) {
     try {
-      const { error } = await sbClient
+      const { data, error } = await sbClient
         .from('waitlist')
-        .insert([{ email: email, lang: lang, created_at: new Date().toISOString() }]);
+        .insert([{ email: email }])
+        .select();
       
       if (error) {
-        console.error('Supabase error:', error);
-        errorMsg.textContent = lang === 'ro' ? 'Eroare la trimitere. Încearcă din nou.' : 'Something went wrong. Please try again.';
+        console.error('❌ Supabase error:', error.message, error.code);
+        errorMsg.textContent = 'Error: ' + error.message;
         errorMsg.classList.add('show');
         return;
       }
+      
+      console.log('✅ Saved to Supabase:', data);
     } catch (err) {
-      console.error('Network error:', err);
-      errorMsg.textContent = lang === 'ro' ? 'Eroare de conexiune.' : 'Connection error.';
+      console.error('❌ Network error:', err);
+      errorMsg.textContent = 'Connection failed';
       errorMsg.classList.add('show');
       return;
     }
