@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" async></script>
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -217,7 +217,7 @@
       animation: letterIn 0.55s cubic-bezier(0.16,1,0.3,1) forwards;
     }
 
-    /* ═══════ PAGE 1 — 100% CSS animations ═══════ */
+    /* PAGE 1 — CSS animations */
     .p1-container { width: 100%; max-width: 700px; display: flex; flex-direction: column; align-items: center; gap: 1.2rem; position: relative; }
 
     .headline { text-align: center; margin-bottom: 8px; }
@@ -263,7 +263,6 @@
       to   { opacity:1; transform:translateY(0); filter:blur(0); }
     }
 
-    /* Animațiile pornesc automat când pagina e activă — FĂRĂ JS */
     .page.active #hl1 {
       animation: slideUp 1s cubic-bezier(0.16,1,0.3,1) forwards;
       animation-delay: 0.2s;
@@ -353,7 +352,7 @@
       font-weight: 600;
     }
 
-    /* ═══════ PAGE 2 ═══════ */
+    /* PAGE 2 */
     .p2-container {
       width: 100%;
       height: 100%;
@@ -494,7 +493,7 @@
       box-shadow: 0 0 20px rgba(0,229,255,0.5);
     }
 
-    /* ═══════ PAGE 3 ═══════ */
+    /* PAGE 3 */
     .p3-container {
       width: 100%;
       display: flex; flex-direction: column;
@@ -713,7 +712,6 @@
       .page3-sub { font-size: clamp(1.1rem, 1.4vw, 1.4rem); }
     }
   </style>
-<base target="_blank">
 </head>
 <body>
 
@@ -825,17 +823,16 @@
 const SUPABASE_URL = 'https://uutxxjvwlnjviwqzazmy.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV1dHh4anZ3bG5qdml3cXphem15Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNDU1NDUsImV4cCI6MjA5MTkyMTU0NX0.7bM2pQaO1ZCItvTIVyzKOHnZlUXrvdsK6Gpo96anaXc';
 
-let supabase = null;
+let sbClient = null;
 try {
   if (
     SUPABASE_URL && SUPABASE_KEY &&
-    !SUPABASE_URL.includes('your-project') &&
-    SUPABASE_KEY !== 'your-anon-key' &&
-    typeof window !== 'undefined' &&
-    window.supabase &&
+    SUPABASE_URL.startsWith('https://') &&
+    SUPABASE_KEY.length > 20 &&
+    typeof window.supabase !== 'undefined' &&
     typeof window.supabase.createClient === 'function'
   ) {
-    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     console.log('✅ Supabase connected');
   } else {
     console.warn('⚠️ Supabase not configured — running offline');
@@ -892,9 +889,7 @@ const translations = {
   }
 };
 
-// ═══════════════════════════════════════════════════════
-//  DOM REFS
-// ═══════════════════════════════════════════════════════
+// DOM REFS
 const els = {
   logoSub: document.getElementById('logoSub'),
   hl1: document.getElementById('hl1'),
@@ -917,7 +912,6 @@ const els = {
   errorMsg: document.getElementById('errorMsg'),
 };
 
-// Salvam textele originale pentru re-animare
 const originals = {
   priceTagline: els.priceTagline.innerHTML,
   priceSubtagline: els.priceSubtagline.textContent,
@@ -928,17 +922,11 @@ const originals = {
   p3sub: els.p3sub.textContent,
 };
 
-// ═══════════════════════════════════════════════════════
-//  STATE
-// ═══════════════════════════════════════════════════════
 let lang = localStorage.getItem('vb_lang') || 'en';
 let currentPage = 0;
 let isTransitioning = false;
 const PAGES = ['page0', 'page1', 'page2'];
 
-// ═══════════════════════════════════════════════════════
-//  FUNCTIONS
-// ═══════════════════════════════════════════════════════
 function setLang(l) {
   lang = l;
   localStorage.setItem('vb_lang', l);
@@ -948,25 +936,21 @@ function setLang(l) {
   document.getElementById('lf').textContent = l === 'ro' ? '🇷🇴' : '🇺🇸';
   document.getElementById('lc').textContent = l.toUpperCase();
   
-  // Pagina 0
   els.logoSub.textContent = t.logoSub;
   els.hl1.textContent = t.hl1;
   els.hl2.textContent = t.hl2;
   els.s1.textContent = t.s1;
   els.s2.innerHTML = t.s2;
   
-  // Badge-uri
   els.promoText.textContent = t.promoText;
   els.promoSub.textContent = t.promoSub;
   els.spotsBadgeLabel.textContent = t.spotsBadgeLabel;
   
-  // Pagina 1
   els.priceTagline.innerHTML = t.priceTagline;
   els.priceSubtagline.textContent = t.priceSubtagline;
   els.pricePeriod.textContent = t.pricePeriod;
   els.spotsLabel.textContent = t.spotsLabel;
   
-  // Pagina 2
   els.p3eyebrow.textContent = t.p3eyebrow;
   els.p3headline.textContent = t.p3headline;
   els.p3sub.textContent = t.p3sub;
@@ -974,7 +958,6 @@ function setLang(l) {
   els.modalText.textContent = t.modalText;
   els.modalBtn.textContent = t.modalBtn;
   
-  // Update originals pentru re-animare corecta
   originals.priceTagline = t.priceTagline;
   originals.priceSubtagline = t.priceSubtagline;
   originals.pricePeriod = t.pricePeriod;
@@ -997,9 +980,9 @@ async function handleSubmit(e) {
   
   errorMsg.classList.remove('show');
   
-  if (supabase) {
+  if (sbClient) {
     try {
-      const { error } = await supabase
+      const { error } = await sbClient
         .from('waitlist')
         .insert([{ email: email, lang: lang, created_at: new Date().toISOString() }]);
       
@@ -1128,9 +1111,7 @@ function countUp(el, start, end, duration) {
   requestAnimationFrame(step);
 }
 
-// ═══════════════════════════════════════════════════════
-//  EVENT LISTENERS
-// ═══════════════════════════════════════════════════════
+// EVENT LISTENERS
 document.getElementById('langBtn').addEventListener('click', () => setLang(lang === 'ro' ? 'en' : 'ro'));
 
 document.getElementById('arrowBtn').addEventListener('click', () => goToPage(currentPage + 1));
@@ -1168,9 +1149,7 @@ document.querySelectorAll('button, .dot, .cta-button, .pill-input, .lang-btn, .a
   el.addEventListener('mouseleave', () => hand.classList.remove('big'));
 });
 
-// ═══════════════════════════════════════════════════════
-//  INIT
-// ═══════════════════════════════════════════════════════
+// INIT
 setLang(lang);
 </script>
 </body>
